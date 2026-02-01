@@ -21,8 +21,7 @@ Z_LINES  = FLOOR_TH + LINE_H / 2.0 + 0.0002
 Z_SQUARE = FLOOR_TH + SQUARE_H / 2.0 + 0.0004
 Z_PATH   = FLOOR_TH + PATH_H / 2.0 + 0.0006
 
-# -------- Fixed squares--------
-# (i, j) with i=x index left->right, j=y index top->bottom
+# -------- Fixed squares --------
 RED_CELL  = (20, 3)
 BLUE_CELL = (2, 24)
 
@@ -32,7 +31,6 @@ def cell_center(i, j):
     return x, y
 
 # -------- Yellow loop path nodes --------
-# Ordered cycle of cell centers (i,j). Consecutive nodes are 4-neighbor adjacent.
 PATH_NODES = [
 (2,2),(3,2),(4,2),(5,2),(6,2),(7,2),(8,2),(9,2),(10,2),(11,2),(12,2),(13,2),(14,2),(15,2),(16,2),(17,2),(18,2),
 (18,1),(18,0),(19,0),(20,0),(21,0),(22,0),(23,0),
@@ -53,24 +51,36 @@ PATH_NODES = [
 (2,10),(2,9),(2,8),(2,7),(2,6),(2,5),(2,4),(2,3)
 ]
 
-def box_visual(name, size_x, size_y, size_z, x, y, z, roll=0.0, pitch=0.0, yaw=0.0, rgba=(1,1,1,1)):
+# -------- Visual helper with emissive material --------
+def box_visual(name, size_x, size_y, size_z, x, y, z,
+               roll=0.0, pitch=0.0, yaw=0.0, rgba=(1,1,1,1)):
     r,g,b,a = rgba
     return f"""
       <visual name="{name}_vis">
         <pose>{x:.4f} {y:.4f} {z:.4f} {roll:.4f} {pitch:.4f} {yaw:.4f}</pose>
-        <geometry><box><size>{size_x:.4f} {size_y:.4f} {size_z:.4f}</size></box></geometry>
+        <geometry>
+          <box>
+            <size>{size_x:.4f} {size_y:.4f} {size_z:.4f}</size>
+          </box>
+        </geometry>
         <material>
           <ambient>{r:.3f} {g:.3f} {b:.3f} {a:.3f}</ambient>
           <diffuse>{r:.3f} {g:.3f} {b:.3f} {a:.3f}</diffuse>
+          <emissive>{r:.3f} {g:.3f} {b:.3f} {a:.3f}</emissive>
           <specular>0 0 0 1</specular>
         </material>
       </visual>
       <collision name="{name}_col">
         <pose>{x:.4f} {y:.4f} {z:.4f} {roll:.4f} {pitch:.4f} {yaw:.4f}</pose>
-        <geometry><box><size>{size_x:.4f} {size_y:.4f} {size_z:.4f}</size></box></geometry>
+        <geometry>
+          <box>
+            <size>{size_x:.4f} {size_y:.4f} {size_z:.4f}</size>
+          </box>
+        </geometry>
       </collision>
 """.rstrip()
 
+# -------- Floor --------
 def plane_model():
     return f"""
     <model name="floor">
@@ -93,12 +103,11 @@ def plane_model():
     </model>
 """.rstrip()
 
+# -------- Grid lines --------
 def grid_lines_model():
     parts = []
-    # 26 vertical + 26 horizontal lines
     for k in range(GRID_N + 1):
         x = -HALF + k * CELL
-        # vertical line spans entire grid in y
         parts.append(box_visual(
             name=f"v{k}",
             size_x=GRID_LINE_W,
@@ -109,7 +118,6 @@ def grid_lines_model():
         ))
     for k in range(GRID_N + 1):
         y = HALF - k * CELL
-        # horizontal line spans entire grid in x
         parts.append(box_visual(
             name=f"h{k}",
             size_x=GRID_SPAN + GRID_LINE_W,
@@ -118,16 +126,16 @@ def grid_lines_model():
             x=0.0, y=y, z=Z_LINES,
             rgba=(1,1,1,1.0)
         ))
-    joined = "\n".join(parts)
     return f"""
     <model name="grid_lines">
       <static>true</static>
       <link name="link">
-{joined}
+{chr(10).join(parts)}
       </link>
     </model>
 """.rstrip()
 
+# -------- Start & portal --------
 def squares_model():
     rx, ry = cell_center(*RED_CELL)
     bx, by = cell_center(*BLUE_CELL)
@@ -143,51 +151,59 @@ def squares_model():
     </model>
 """.rstrip()
 
+# -------- Hostile path --------
 def path_model():
     parts = []
-    # Render each edge as a thick box segment between consecutive nodes (plus closing segment)
-    nodes = PATH_NODES[:]
-    nodes.append(PATH_NODES[0])  # close the loop
+    nodes = PATH_NODES[:] + [PATH_NODES[0]]
+
+    OVERLAP = 0.025  # 2.5 cm per end
+
     for idx in range(len(nodes) - 1):
-        (i1, j1) = nodes[idx]
-        (i2, j2) = nodes[idx + 1]
+        (i1, j1), (i2, j2) = nodes[idx], nodes[idx + 1]
         x1, y1 = cell_center(i1, j1)
         x2, y2 = cell_center(i2, j2)
-
         mx, my = (x1 + x2) / 2.0, (y1 + y2) / 2.0
 
-        OVERLAP = 0.025  # 2.5 cm per end
-        if i2 != i1:  # horizontal segment
+        if i2 != i1:
             sx, sy = (CELL + 2*OVERLAP), PATH_W
-            yaw = 0.0
-        else:         # vertical segment
+        else:
             sx, sy = PATH_W, (CELL + 2*OVERLAP)
-            yaw = 0.0
 
         parts.append(box_visual(
             name=f"seg{idx}",
             size_x=sx, size_y=sy, size_z=PATH_H,
             x=mx, y=my, z=Z_PATH,
-            yaw=yaw,
-            rgba=(1.0, 1.0, 0.0, 1.0)  # yellow
+            rgba=(1.0, 0.85, 0.10, 1.0)  # proper yellow
         ))
 
-    joined = "\n".join(parts)
     return f"""
     <model name="hostile_path">
       <static>true</static>
       <link name="link">
-{joined}
+{chr(10).join(parts)}
       </link>
     </model>
 """.rstrip()
 
+# -------- SDF assembly --------
 sdf = f"""<?xml version="1.0" ?>
 <sdf version="1.9">
   <world name="slrc_arena_from_image">
+
     <gravity>0 0 -9.81</gravity>
 
-    <plugin name="scene_broadcaster" filename="libgz-sim-scene-broadcaster-system.so"/>
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0 0 0 1</background>
+      <shadows>false</shadows>
+    </scene>
+
+    <light name="sun" type="directional">
+      <pose>-10 -10 30 0 0 0</pose>
+      <direction>-0.3 0.3 -1</direction>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0 0 0 1</specular>
+    </light>
 
 {plane_model()}
 

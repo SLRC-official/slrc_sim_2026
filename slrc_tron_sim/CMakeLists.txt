@@ -1,4 +1,3 @@
-cat > CMakeLists.txt <<'EOF'
 cmake_minimum_required(VERSION 3.8)
 project(slrc_tron_sim)
 
@@ -9,10 +8,10 @@ install(DIRECTORY
   launch
   worlds
   urdf
+  meshes
   config
   scripts
   DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()
-EOF
