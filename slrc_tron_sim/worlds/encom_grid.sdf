@@ -1,0 +1,2654 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="slrc_arena_from_image">
+    <gravity>0 0 -9.81</gravity>
+
+    <plugin name="scene_broadcaster" filename="libgz-sim-scene-broadcaster-system.so"/>
+
+
+    <model name="floor">
+      <static>true</static>
+      <link name="link">
+        <collision name="col">
+          <pose>0 0 0.0010 0 0 0</pose>
+          <geometry><box><size>50 50 0.0020</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <pose>0 0 0.0010 0 0 0</pose>
+          <geometry><box><size>50 50 0.0020</size></box></geometry>
+          <material>
+            <ambient>0.05 0.05 0.05 1</ambient>
+            <diffuse>0.05 0.05 0.05 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+
+    <model name="grid_lines">
+      <static>true</static>
+      <link name="link">
+
+      <visual name="v0_vis">
+        <pose>-5.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v0_col">
+        <pose>-5.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v1_vis">
+        <pose>-4.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v1_col">
+        <pose>-4.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v2_vis">
+        <pose>-4.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v2_col">
+        <pose>-4.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v3_vis">
+        <pose>-3.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v3_col">
+        <pose>-3.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v4_vis">
+        <pose>-3.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v4_col">
+        <pose>-3.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v5_vis">
+        <pose>-3.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v5_col">
+        <pose>-3.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v6_vis">
+        <pose>-2.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v6_col">
+        <pose>-2.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v7_vis">
+        <pose>-2.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v7_col">
+        <pose>-2.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v8_vis">
+        <pose>-1.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v8_col">
+        <pose>-1.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v9_vis">
+        <pose>-1.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v9_col">
+        <pose>-1.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v10_vis">
+        <pose>-1.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v10_col">
+        <pose>-1.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v11_vis">
+        <pose>-0.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v11_col">
+        <pose>-0.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v12_vis">
+        <pose>-0.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v12_col">
+        <pose>-0.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v13_vis">
+        <pose>0.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v13_col">
+        <pose>0.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v14_vis">
+        <pose>0.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v14_col">
+        <pose>0.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v15_vis">
+        <pose>1.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v15_col">
+        <pose>1.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v16_vis">
+        <pose>1.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v16_col">
+        <pose>1.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v17_vis">
+        <pose>1.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v17_col">
+        <pose>1.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v18_vis">
+        <pose>2.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v18_col">
+        <pose>2.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v19_vis">
+        <pose>2.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v19_col">
+        <pose>2.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v20_vis">
+        <pose>3.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v20_col">
+        <pose>3.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v21_vis">
+        <pose>3.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v21_col">
+        <pose>3.4000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v22_vis">
+        <pose>3.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v22_col">
+        <pose>3.8000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v23_vis">
+        <pose>4.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v23_col">
+        <pose>4.2000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v24_vis">
+        <pose>4.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v24_col">
+        <pose>4.6000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="v25_vis">
+        <pose>5.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="v25_col">
+        <pose>5.0000 0.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0300 10.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h0_vis">
+        <pose>0.0000 5.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h0_col">
+        <pose>0.0000 5.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h1_vis">
+        <pose>0.0000 4.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h1_col">
+        <pose>0.0000 4.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h2_vis">
+        <pose>0.0000 4.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h2_col">
+        <pose>0.0000 4.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h3_vis">
+        <pose>0.0000 3.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h3_col">
+        <pose>0.0000 3.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h4_vis">
+        <pose>0.0000 3.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h4_col">
+        <pose>0.0000 3.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h5_vis">
+        <pose>0.0000 3.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h5_col">
+        <pose>0.0000 3.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h6_vis">
+        <pose>0.0000 2.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h6_col">
+        <pose>0.0000 2.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h7_vis">
+        <pose>0.0000 2.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h7_col">
+        <pose>0.0000 2.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h8_vis">
+        <pose>0.0000 1.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h8_col">
+        <pose>0.0000 1.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h9_vis">
+        <pose>0.0000 1.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h9_col">
+        <pose>0.0000 1.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h10_vis">
+        <pose>0.0000 1.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h10_col">
+        <pose>0.0000 1.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h11_vis">
+        <pose>0.0000 0.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h11_col">
+        <pose>0.0000 0.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h12_vis">
+        <pose>0.0000 0.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h12_col">
+        <pose>0.0000 0.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h13_vis">
+        <pose>0.0000 -0.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h13_col">
+        <pose>0.0000 -0.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h14_vis">
+        <pose>0.0000 -0.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h14_col">
+        <pose>0.0000 -0.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h15_vis">
+        <pose>0.0000 -1.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h15_col">
+        <pose>0.0000 -1.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h16_vis">
+        <pose>0.0000 -1.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h16_col">
+        <pose>0.0000 -1.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h17_vis">
+        <pose>0.0000 -1.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h17_col">
+        <pose>0.0000 -1.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h18_vis">
+        <pose>0.0000 -2.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h18_col">
+        <pose>0.0000 -2.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h19_vis">
+        <pose>0.0000 -2.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h19_col">
+        <pose>0.0000 -2.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h20_vis">
+        <pose>0.0000 -3.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h20_col">
+        <pose>0.0000 -3.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h21_vis">
+        <pose>0.0000 -3.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h21_col">
+        <pose>0.0000 -3.4000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h22_vis">
+        <pose>0.0000 -3.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h22_col">
+        <pose>0.0000 -3.8000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h23_vis">
+        <pose>0.0000 -4.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h23_col">
+        <pose>0.0000 -4.2000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h24_vis">
+        <pose>0.0000 -4.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h24_col">
+        <pose>0.0000 -4.6000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+
+      <visual name="h25_vis">
+        <pose>0.0000 -5.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 1.000 1.000</ambient>
+          <diffuse>1.000 1.000 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="h25_col">
+        <pose>0.0000 -5.0000 0.0032 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>10.0300 0.0300 0.0020</size></box></geometry>
+      </collision>
+      </link>
+    </model>
+
+
+    <model name="start_and_portal">
+      <static>true</static>
+      <link name="link">
+
+      <visual name="portal_red_vis">
+        <pose>3.2000 3.6000 0.0039 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4000 0.4000 0.0030</size></box></geometry>
+        <material>
+          <ambient>1.000 0.100 0.100 1.000</ambient>
+          <diffuse>1.000 0.100 0.100 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="portal_red_col">
+        <pose>3.2000 3.6000 0.0039 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4000 0.4000 0.0030</size></box></geometry>
+      </collision>
+
+      <visual name="start_blue_vis">
+        <pose>-4.0000 -4.8000 0.0039 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4000 0.4000 0.0030</size></box></geometry>
+        <material>
+          <ambient>0.100 0.200 1.000 1.000</ambient>
+          <diffuse>0.100 0.200 1.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="start_blue_col">
+        <pose>-4.0000 -4.8000 0.0039 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4000 0.4000 0.0030</size></box></geometry>
+      </collision>
+      </link>
+    </model>
+
+
+    <model name="hostile_path">
+      <static>true</static>
+      <link name="link">
+
+      <visual name="seg0_vis">
+        <pose>-3.8000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg0_col">
+        <pose>-3.8000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg1_vis">
+        <pose>-3.4000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg1_col">
+        <pose>-3.4000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg2_vis">
+        <pose>-3.0000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg2_col">
+        <pose>-3.0000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg3_vis">
+        <pose>-2.6000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg3_col">
+        <pose>-2.6000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg4_vis">
+        <pose>-2.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg4_col">
+        <pose>-2.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg5_vis">
+        <pose>-1.8000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg5_col">
+        <pose>-1.8000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg6_vis">
+        <pose>-1.4000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg6_col">
+        <pose>-1.4000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg7_vis">
+        <pose>-1.0000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg7_col">
+        <pose>-1.0000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg8_vis">
+        <pose>-0.6000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg8_col">
+        <pose>-0.6000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg9_vis">
+        <pose>-0.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg9_col">
+        <pose>-0.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg10_vis">
+        <pose>0.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg10_col">
+        <pose>0.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg11_vis">
+        <pose>0.6000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg11_col">
+        <pose>0.6000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg12_vis">
+        <pose>1.0000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg12_col">
+        <pose>1.0000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg13_vis">
+        <pose>1.4000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg13_col">
+        <pose>1.4000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg14_vis">
+        <pose>1.8000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg14_col">
+        <pose>1.8000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg15_vis">
+        <pose>2.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg15_col">
+        <pose>2.2000 4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg16_vis">
+        <pose>2.4000 4.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg16_col">
+        <pose>2.4000 4.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg17_vis">
+        <pose>2.4000 4.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg17_col">
+        <pose>2.4000 4.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg18_vis">
+        <pose>2.6000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg18_col">
+        <pose>2.6000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg19_vis">
+        <pose>3.0000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg19_col">
+        <pose>3.0000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg20_vis">
+        <pose>3.4000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg20_col">
+        <pose>3.4000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg21_vis">
+        <pose>3.8000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg21_col">
+        <pose>3.8000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg22_vis">
+        <pose>4.2000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg22_col">
+        <pose>4.2000 4.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg23_vis">
+        <pose>4.4000 4.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg23_col">
+        <pose>4.4000 4.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg24_vis">
+        <pose>4.4000 4.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg24_col">
+        <pose>4.4000 4.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg25_vis">
+        <pose>4.4000 3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg25_col">
+        <pose>4.4000 3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg26_vis">
+        <pose>4.4000 3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg26_col">
+        <pose>4.4000 3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg27_vis">
+        <pose>4.4000 3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg27_col">
+        <pose>4.4000 3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg28_vis">
+        <pose>4.4000 2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg28_col">
+        <pose>4.4000 2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg29_vis">
+        <pose>4.4000 2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg29_col">
+        <pose>4.4000 2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg30_vis">
+        <pose>4.4000 1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg30_col">
+        <pose>4.4000 1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg31_vis">
+        <pose>4.4000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg31_col">
+        <pose>4.4000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg32_vis">
+        <pose>4.4000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg32_col">
+        <pose>4.4000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg33_vis">
+        <pose>4.4000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg33_col">
+        <pose>4.4000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg34_vis">
+        <pose>4.4000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg34_col">
+        <pose>4.4000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg35_vis">
+        <pose>4.4000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg35_col">
+        <pose>4.4000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg36_vis">
+        <pose>4.4000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg36_col">
+        <pose>4.4000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg37_vis">
+        <pose>4.4000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg37_col">
+        <pose>4.4000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg38_vis">
+        <pose>4.4000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg38_col">
+        <pose>4.4000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg39_vis">
+        <pose>4.4000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg39_col">
+        <pose>4.4000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg40_vis">
+        <pose>4.4000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg40_col">
+        <pose>4.4000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg41_vis">
+        <pose>4.4000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg41_col">
+        <pose>4.4000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg42_vis">
+        <pose>4.4000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg42_col">
+        <pose>4.4000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg43_vis">
+        <pose>4.4000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg43_col">
+        <pose>4.4000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg44_vis">
+        <pose>4.4000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg44_col">
+        <pose>4.4000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg45_vis">
+        <pose>4.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg45_col">
+        <pose>4.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg46_vis">
+        <pose>3.8000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg46_col">
+        <pose>3.8000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg47_vis">
+        <pose>3.4000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg47_col">
+        <pose>3.4000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg48_vis">
+        <pose>3.2000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg48_col">
+        <pose>3.2000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg49_vis">
+        <pose>3.2000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg49_col">
+        <pose>3.2000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg50_vis">
+        <pose>3.2000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg50_col">
+        <pose>3.2000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg51_vis">
+        <pose>3.2000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg51_col">
+        <pose>3.2000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg52_vis">
+        <pose>3.2000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg52_col">
+        <pose>3.2000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg53_vis">
+        <pose>3.2000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg53_col">
+        <pose>3.2000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg54_vis">
+        <pose>3.2000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg54_col">
+        <pose>3.2000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg55_vis">
+        <pose>3.2000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg55_col">
+        <pose>3.2000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg56_vis">
+        <pose>3.2000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg56_col">
+        <pose>3.2000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg57_vis">
+        <pose>3.2000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg57_col">
+        <pose>3.2000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg58_vis">
+        <pose>3.2000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg58_col">
+        <pose>3.2000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg59_vis">
+        <pose>3.2000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg59_col">
+        <pose>3.2000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg60_vis">
+        <pose>3.2000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg60_col">
+        <pose>3.2000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg61_vis">
+        <pose>3.2000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg61_col">
+        <pose>3.2000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg62_vis">
+        <pose>3.0000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg62_col">
+        <pose>3.0000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg63_vis">
+        <pose>2.6000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg63_col">
+        <pose>2.6000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg64_vis">
+        <pose>2.2000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg64_col">
+        <pose>2.2000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg65_vis">
+        <pose>1.8000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg65_col">
+        <pose>1.8000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg66_vis">
+        <pose>1.4000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg66_col">
+        <pose>1.4000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg67_vis">
+        <pose>1.0000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg67_col">
+        <pose>1.0000 1.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg68_vis">
+        <pose>0.8000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg68_col">
+        <pose>0.8000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg69_vis">
+        <pose>0.8000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg69_col">
+        <pose>0.8000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg70_vis">
+        <pose>0.8000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg70_col">
+        <pose>0.8000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg71_vis">
+        <pose>0.8000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg71_col">
+        <pose>0.8000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg72_vis">
+        <pose>0.6000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg72_col">
+        <pose>0.6000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg73_vis">
+        <pose>0.2000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg73_col">
+        <pose>0.2000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg74_vis">
+        <pose>-0.2000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg74_col">
+        <pose>-0.2000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg75_vis">
+        <pose>-0.6000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg75_col">
+        <pose>-0.6000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg76_vis">
+        <pose>-1.0000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg76_col">
+        <pose>-1.0000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg77_vis">
+        <pose>-1.4000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg77_col">
+        <pose>-1.4000 0.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg78_vis">
+        <pose>-1.6000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg78_col">
+        <pose>-1.6000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg79_vis">
+        <pose>-1.6000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg79_col">
+        <pose>-1.6000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg80_vis">
+        <pose>-1.4000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg80_col">
+        <pose>-1.4000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg81_vis">
+        <pose>-1.0000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg81_col">
+        <pose>-1.0000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg82_vis">
+        <pose>-0.6000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg82_col">
+        <pose>-0.6000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg83_vis">
+        <pose>-0.2000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg83_col">
+        <pose>-0.2000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg84_vis">
+        <pose>0.2000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg84_col">
+        <pose>0.2000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg85_vis">
+        <pose>0.6000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg85_col">
+        <pose>0.6000 -0.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg86_vis">
+        <pose>0.8000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg86_col">
+        <pose>0.8000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg87_vis">
+        <pose>0.8000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg87_col">
+        <pose>0.8000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg88_vis">
+        <pose>0.8000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg88_col">
+        <pose>0.8000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg89_vis">
+        <pose>0.8000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg89_col">
+        <pose>0.8000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg90_vis">
+        <pose>0.8000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg90_col">
+        <pose>0.8000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg91_vis">
+        <pose>0.8000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg91_col">
+        <pose>0.8000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg92_vis">
+        <pose>0.8000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg92_col">
+        <pose>0.8000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg93_vis">
+        <pose>0.8000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg93_col">
+        <pose>0.8000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg94_vis">
+        <pose>0.6000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg94_col">
+        <pose>0.6000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg95_vis">
+        <pose>0.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg95_col">
+        <pose>0.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg96_vis">
+        <pose>-0.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg96_col">
+        <pose>-0.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg97_vis">
+        <pose>-0.6000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg97_col">
+        <pose>-0.6000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg98_vis">
+        <pose>-1.0000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg98_col">
+        <pose>-1.0000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg99_vis">
+        <pose>-1.4000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg99_col">
+        <pose>-1.4000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg100_vis">
+        <pose>-1.8000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg100_col">
+        <pose>-1.8000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg101_vis">
+        <pose>-2.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg101_col">
+        <pose>-2.2000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg102_vis">
+        <pose>-2.6000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg102_col">
+        <pose>-2.6000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg103_vis">
+        <pose>-3.0000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg103_col">
+        <pose>-3.0000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg104_vis">
+        <pose>-3.4000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg104_col">
+        <pose>-3.4000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg105_vis">
+        <pose>-3.8000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg105_col">
+        <pose>-3.8000 -4.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg106_vis">
+        <pose>-4.0000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg106_col">
+        <pose>-4.0000 -3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg107_vis">
+        <pose>-4.0000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg107_col">
+        <pose>-4.0000 -3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg108_vis">
+        <pose>-4.0000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg108_col">
+        <pose>-4.0000 -3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg109_vis">
+        <pose>-4.0000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg109_col">
+        <pose>-4.0000 -2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg110_vis">
+        <pose>-3.8000 -2.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg110_col">
+        <pose>-3.8000 -2.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg111_vis">
+        <pose>-3.4000 -2.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg111_col">
+        <pose>-3.4000 -2.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg112_vis">
+        <pose>-3.0000 -2.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg112_col">
+        <pose>-3.0000 -2.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg113_vis">
+        <pose>-2.8000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg113_col">
+        <pose>-2.8000 -2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg114_vis">
+        <pose>-2.8000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg114_col">
+        <pose>-2.8000 -1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg115_vis">
+        <pose>-2.8000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg115_col">
+        <pose>-2.8000 -1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg116_vis">
+        <pose>-2.8000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg116_col">
+        <pose>-2.8000 -1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg117_vis">
+        <pose>-2.8000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg117_col">
+        <pose>-2.8000 -0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg118_vis">
+        <pose>-2.8000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg118_col">
+        <pose>-2.8000 -0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg119_vis">
+        <pose>-2.8000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg119_col">
+        <pose>-2.8000 0.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg120_vis">
+        <pose>-3.0000 0.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg120_col">
+        <pose>-3.0000 0.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg121_vis">
+        <pose>-3.4000 0.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg121_col">
+        <pose>-3.4000 0.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg122_vis">
+        <pose>-3.8000 0.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg122_col">
+        <pose>-3.8000 0.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.4500 0.0500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg123_vis">
+        <pose>-4.0000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg123_col">
+        <pose>-4.0000 0.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg124_vis">
+        <pose>-4.0000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg124_col">
+        <pose>-4.0000 1.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg125_vis">
+        <pose>-4.0000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg125_col">
+        <pose>-4.0000 1.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg126_vis">
+        <pose>-4.0000 1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg126_col">
+        <pose>-4.0000 1.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg127_vis">
+        <pose>-4.0000 2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg127_col">
+        <pose>-4.0000 2.2000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg128_vis">
+        <pose>-4.0000 2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg128_col">
+        <pose>-4.0000 2.6000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg129_vis">
+        <pose>-4.0000 3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg129_col">
+        <pose>-4.0000 3.0000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg130_vis">
+        <pose>-4.0000 3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg130_col">
+        <pose>-4.0000 3.4000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+
+      <visual name="seg131_vis">
+        <pose>-4.0000 3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+        <material>
+          <ambient>1.000 1.000 0.000 1.000</ambient>
+          <diffuse>1.000 1.000 0.000 1.000</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="seg131_col">
+        <pose>-4.0000 3.8000 0.0046 0.0000 0.0000 0.0000</pose>
+        <geometry><box><size>0.0500 0.4500 0.0040</size></box></geometry>
+      </collision>
+      </link>
+    </model>
+
+  </world>
+</sdf>
