@@ -17,138 +17,121 @@
        ========================= -->
   <link name="base_link">
     <inertial>
-      <origin xyz="0 0 0.20" rpy="0 0 0"/>
-      <mass value="18.0"/>
-      <inertia ixx="0.9" ixy="0.0" ixz="0.0"
-               iyy="1.2" iyz="0.0"
-               izz="1.5"/>
+  <!-- align inertia origin with bbox collision center -->
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <mass value="4.0"/>
+      <inertia ixx="0.003387" ixy="0.0" ixz="0.0"
+               iyy="0.012987" iyz="0.0"
+               izz="0.012000"/>
     </inertial>
 
     <visual name="lightcycle_visual">
-      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+      <origin xyz="-0.09 0.027 0" rpy="1.57 0 0"/>
       <geometry>
-        <mesh filename="package://slrc_tron_sim/meshes/lightcycle.STL" scale="0.002 0.002 0.002"/>
+        <mesh filename="package://slrc_tron_sim/meshes/lightcycle.STL" scale="0.001 0.001 0.0015"/>
       </geometry>
       <material name="lightcycle_red">
     <color rgba="1.0 0.05 0.15 1.0"/>
   </material>
     </visual>
 
-    <collision name="base_collision">
-      <origin xyz="0 0 0.20" rpy="0 0 0"/>
+    <collision name="chassis_bbox">
+      <!-- center the box around the bike’s center-of-mass-ish -->
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
       <geometry>
-        <box size="1.20 0.35 0.40"/>
+        <!-- L, W, H -->
+        <box size="0.18 0.06 0.081"/>
       </geometry>
     </collision>
   </link>
 
-  <!-- =========================
-       Invisible Mecanum Wheels for Holonomic Control
-       ========================= -->
-  <!-- Front Left -->
-  <link name="front_left_wheel">
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
-    </inertial>
-    <collision>
-      <geometry><sphere radius="0.1"/></geometry>
-    </collision>
-  </link>
-  <joint name="front_left_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="front_left_wheel"/>
-    <origin xyz="0.3 0.25 0" rpy="-1.5707 0 0"/>
-    <axis xyz="0 0 1"/>
-  </joint>
+      <!-- =========================
+        Wheels (Diff Drive)
+        ========================= -->
 
-  <!-- Front Right -->
-  <link name="front_right_wheel">
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
-    </inertial>
-    <collision>
-      <geometry><sphere radius="0.1"/></geometry>
-    </collision>
-  </link>
-  <joint name="front_right_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="front_right_wheel"/>
-    <origin xyz="0.3 -0.25 0" rpy="-1.5707 0 0"/>
-    <axis xyz="0 0 1"/>
-  </joint>
+    <link name="left_wheel_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.10"/>
+        <inertia ixx="1.0833e-05" ixy="0" ixz="0"
+                iyy="1.0833e-05" iyz="0"
+                izz="2.0000e-05"/>
+      </inertial>
 
-  <!-- Rear Left -->
-  <link name="rear_left_wheel">
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
-    </inertial>
-    <collision>
-      <geometry><sphere radius="0.1"/></geometry>
-    </collision>
-  </link>
-  <joint name="rear_left_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="rear_left_wheel"/>
-    <origin xyz="-0.3 0.25 0" rpy="-1.5707 0 0"/>
-    <axis xyz="0 0 1"/>
-  </joint>
+      <collision name="left_wheel_col">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.02" length="0.01"/>
+        </geometry>
+      </collision>
+    </link>
 
-  <!-- Rear Right -->
-  <link name="rear_right_wheel">
-    <inertial>
-      <mass value="1.0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
-    </inertial>
-    <collision>
-      <geometry><sphere radius="0.1"/></geometry>
-    </collision>
-  </link>
-  <joint name="rear_right_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="rear_right_wheel"/>
-    <origin xyz="-0.3 -0.25 0" rpy="-1.5707 0 0"/>
-    <axis xyz="0 0 1"/>
-  </joint>
+
+    <link name="right_wheel_link">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="0.10"/>
+        <inertia ixx="1.0833e-05" ixy="0" ixz="0"
+                iyy="1.0833e-05" iyz="0"
+                izz="2.0000e-05"/>
+      </inertial>
+
+      <collision name="right_wheel_col">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.02" length="0.01"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="left_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="left_wheel_link"/>
+      <!-- Apply same X/Y offset as the visual -->
+      <origin xyz="0.0 0.035 0.021" rpy="1.5708 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+
+    <joint name="right_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="right_wheel_link"/>
+      <origin xyz="0 -0.035 0.021" rpy="1.5708 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+
 
   <!-- =========================
-       Utility: LED (geometry + frame)
-       ========================= -->
+    LED
+     ========================= -->
 <link name="led_link">
-
-  <!-- Cylinder base of the beacon -->
+  <!-- Cylinder base -->
   <visual name="led_base_vis">
-    <origin xyz="0 -0.05 0.12" rpy="0 0 0"/>
+    <origin xyz="0 0 0.005" rpy="0 0 0"/>
     <geometry>
-      <cylinder radius="0.01" length="0.03"/>
+      <cylinder radius="0.005" length="0.015"/>
     </geometry>
     <material name="led_base_red">
       <color rgba="1.0 0.05 0.15 1.0"/>
     </material>
   </visual>
 
-  <!-- Dome -->
+  <!-- Dome: sit on top of cylinder -->
   <visual name="led_dome_vis">
-    <!-- Put the sphere center slightly above the cylinder top -->
-    <origin xyz="0 -0.05 0.15" rpy="0 0 0"/>
+    <origin xyz="0 0 0.015" rpy="0 0 0"/>
     <geometry>
-      <sphere radius="0.022"/>
+      <sphere radius="0.008"/>
     </geometry>
     <material name="led_glow_blue">
       <color rgba="0.10 0.40 1.00 1.0"/>
     </material>
   </visual>
-
 </link>
 
-
-  <joint name="led_fixed" type="fixed">
-    <parent link="base_link"/>
-    <child link="led_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
+<joint name="led_fixed" type="fixed">
+  <parent link="base_link"/>
+  <child link="led_link"/>
+  <origin xyz="-0.05 0 0.058" rpy="0 0 0"/>
+</joint>
 
   <!-- =========================
        Cameras (2 front + 1 floor)
@@ -194,22 +177,24 @@
 
   <gazebo>
     <plugin
-      filename="libignition-gazebo-mecanum-drive-system.so"
-      name="ignition::gazebo::systems::MecanumDrive">
-      <front_left_joint>front_left_wheel_joint</front_left_joint>
-      <front_right_joint>front_right_wheel_joint</front_right_joint>
-      <back_left_joint>rear_left_wheel_joint</back_left_joint>
-      <back_right_joint>rear_right_wheel_joint</back_right_joint>
-      <wheel_separation>0.5</wheel_separation>
-      <wheel_radius>0.1</wheel_radius>
-      <min_acceleration>-10</min_acceleration>
-      <max_acceleration>10</max_acceleration>
+      filename="libignition-gazebo-diff-drive-system.so"
+      name="ignition::gazebo::systems::DiffDrive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+
+      <wheel_separation>0.08</wheel_separation>
+      <wheel_radius>0.03</wheel_radius>
+
       <topic>/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
       <tf_topic>/tf</tf_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>base_footprint</child_frame_id>
       <odom_publish_frequency>100</odom_publish_frequency>
+
+      <!-- optional limits -->
+      <max_linear_acceleration>5</max_linear_acceleration>
+      <max_angular_acceleration>10</max_angular_acceleration>
     </plugin>
   </gazebo>
 

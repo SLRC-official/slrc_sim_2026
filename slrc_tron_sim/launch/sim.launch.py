@@ -53,9 +53,9 @@ def generate_launch_description():
         arguments=[
             '-string', robot_desc,
             '-name', 'slrc_lightcycle',
-            '-x', '2.0', # Start somewhere safe
+            '-x', '2.0', 
             '-y', '2.0',
-            '-z', '0.5'
+            '-z', '0.1'
         ],
         output='screen'
     )
