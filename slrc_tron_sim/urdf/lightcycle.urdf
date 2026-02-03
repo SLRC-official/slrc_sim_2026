@@ -52,17 +52,36 @@
     <link name="left_wheel_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="0.10"/>
-        <inertia ixx="1.0833e-05" ixy="0" ixz="0"
-                iyy="1.0833e-05" iyz="0"
-                izz="2.0000e-05"/>
+        <mass value="0.2"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0"
+                iyy="0.0001" iyz="0"
+                izz="0.0001"/>
       </inertial>
 
-      <collision name="left_wheel_col">
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- <visual name="left_wheel_visual">
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
         <geometry>
-          <cylinder radius="0.02" length="0.01"/>
+          <cylinder radius="0.033" length="0.02"/>
         </geometry>
+        <material name="wheel_black">
+          <color rgba="0.1 0.1 0.1 1.0"/>
+        </material>
+      </visual> -->
+
+      <collision name="left_wheel_col">
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="0.033" length="0.02"/>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+              <fdir1>1 0 0</fdir1>
+            </ode>
+          </friction>
+        </surface>
       </collision>
     </link>
 
@@ -70,32 +89,50 @@
     <link name="right_wheel_link">
       <inertial>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="0.10"/>
-        <inertia ixx="1.0833e-05" ixy="0" ixz="0"
-                iyy="1.0833e-05" iyz="0"
-                izz="2.0000e-05"/>
+        <mass value="0.2"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0"
+                iyy="0.0001" iyz="0"
+                izz="0.0001"/>
       </inertial>
 
-      <collision name="right_wheel_col">
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- <visual name="right_wheel_visual">
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
         <geometry>
-          <cylinder radius="0.02" length="0.01"/>
+          <cylinder radius="0.033" length="0.02"/>
         </geometry>
+        <material name="wheel_black">
+          <color rgba="0.1 0.1 0.1 1.0"/>
+        </material>
+      </visual> -->
+
+      <collision name="right_wheel_col">
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <geometry>
+          <cylinder radius="0.033" length="0.02"/>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+              <fdir1>1 0 0</fdir1>
+            </ode>
+          </friction>
+        </surface>
       </collision>
     </link>
 
     <joint name="left_wheel_joint" type="continuous">
       <parent link="base_link"/>
       <child link="left_wheel_link"/>
-      <!-- Apply same X/Y offset as the visual -->
-      <origin xyz="0.0 0.035 0.021" rpy="1.5708 0 0"/>
+      <origin xyz="0.0 0.035 0.033" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
     </joint>
 
     <joint name="right_wheel_joint" type="continuous">
       <parent link="base_link"/>
       <child link="right_wheel_link"/>
-      <origin xyz="0 -0.035 0.021" rpy="1.5708 0 0"/>
+      <origin xyz="0 -0.035 0.033" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
     </joint>
 
@@ -183,7 +220,7 @@
       <right_joint>right_wheel_joint</right_joint>
 
       <wheel_separation>0.08</wheel_separation>
-      <wheel_radius>0.03</wheel_radius>
+      <wheel_radius>0.033</wheel_radius>
 
       <topic>/cmd_vel</topic>
       <odom_topic>/odom</odom_topic>
@@ -283,8 +320,8 @@
   </gazebo>
 
   <!-- =========================================================
-       NOTE on “utilities” required by your API:
-       - LED control: the led_link exists in URDF; actual color control is implemented in your API/bridge,
+       NOTE on “utilities” required by API:
+       - LED control: the led_link exists in URDF; actual color control is implemented in API/bridge,
          typically by publishing a topic/service that a small Gazebo plugin subscribes to.
        - Path marking: should be done at WORLD level using Gazebo "marker" messages (not robot URDF).
        ========================================================= -->

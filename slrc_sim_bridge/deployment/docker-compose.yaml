@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Base service definition
+  team1:
+    image: slrc_sim:latest
+    container_name: slrc_team1
+    environment:
+      - ROS_DOMAIN_ID=1
+      - TEAM_NAME=team1
+      - DISPLAY=${DISPLAY}
+    ports:
+      - "8001:8000" # API Port
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: ros2 launch slrc_sim_bridge contest_launch.py team_name:=team1 api_port:=8000 start_x:=2.0 start_y:=2.0
+
+  team2:
+    image: slrc_sim:latest
+    container_name: slrc_team2
+    environment:
+      - ROS_DOMAIN_ID=2
+      - TEAM_NAME=team2
+      - DISPLAY=${DISPLAY}
+    ports:
+      - "8002:8000"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: ros2 launch slrc_sim_bridge contest_launch.py team_name:=team2 api_port:=8000 start_x:=10.0 start_y:=5.0
+
+  team3:
+    image: slrc_sim:latest
+    container_name: slrc_team3
+    environment:
+      - ROS_DOMAIN_ID=3
+      - TEAM_NAME=team3
+      - DISPLAY=${DISPLAY}
+    ports:
+      - "8003:8000"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: ros2 launch slrc_sim_bridge contest_launch.py team_name:=team3 api_port:=8000 start_x:=18.0 start_y:=4.0
+
+  team4:
+    image: slrc_sim:latest
+    container_name: slrc_team4
+    environment:
+      - ROS_DOMAIN_ID=4
+      - TEAM_NAME=team4
+      - DISPLAY=${DISPLAY}
+    ports:
+      - "8004:8000"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: ros2 launch slrc_sim_bridge contest_launch.py team_name:=team4 api_port:=8000 start_x:=22.0 start_y:=22.0
+
+# Network isolation is handled by ROS_DOMAIN_ID. 
+# Docker network itself can be shared or isolated.
