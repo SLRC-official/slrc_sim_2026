@@ -53,9 +53,9 @@ PATH_NODES = [
 
 # -------- Visual helper with emissive material --------
 def box_visual(name, size_x, size_y, size_z, x, y, z,
-               roll=0.0, pitch=0.0, yaw=0.0, rgba=(1,1,1,1)):
+               roll=0.0, pitch=0.0, yaw=0.0, rgba=(1,1,1,1), include_collision=False):
     r,g,b,a = rgba
-    return f"""
+    visual = f"""
       <visual name="{name}_vis">
         <pose>{x:.4f} {y:.4f} {z:.4f} {roll:.4f} {pitch:.4f} {yaw:.4f}</pose>
         <geometry>
@@ -69,7 +69,10 @@ def box_visual(name, size_x, size_y, size_z, x, y, z,
           <emissive>{r:.3f} {g:.3f} {b:.3f} {a:.3f}</emissive>
           <specular>0 0 0 1</specular>
         </material>
-      </visual>
+      </visual>"""
+    
+    if include_collision:
+        visual += f"""
       <collision name="{name}_col">
         <pose>{x:.4f} {y:.4f} {z:.4f} {roll:.4f} {pitch:.4f} {yaw:.4f}</pose>
         <geometry>
@@ -77,8 +80,8 @@ def box_visual(name, size_x, size_y, size_z, x, y, z,
             <size>{size_x:.4f} {size_y:.4f} {size_z:.4f}</size>
           </box>
         </geometry>
-      </collision>
-""".rstrip()
+      </collision>"""
+    return visual.rstrip()
 
 # -------- Floor --------
 def plane_model():
@@ -139,8 +142,8 @@ def grid_lines_model():
 def squares_model():
     rx, ry = cell_center(*RED_CELL)
     bx, by = cell_center(*BLUE_CELL)
-    red = box_visual("portal_red", CELL, CELL, SQUARE_H, rx, ry, Z_SQUARE, rgba=(1.0,0.1,0.1,1.0))
-    blue = box_visual("start_blue", CELL, CELL, SQUARE_H, bx, by, Z_SQUARE, rgba=(0.1,0.2,1.0,1.0))
+    red = box_visual("portal_red", CELL, CELL, SQUARE_H, rx, ry, Z_SQUARE, rgba=(1.0,0.1,0.1,1.0), include_collision=False)
+    blue = box_visual("start_blue", CELL, CELL, SQUARE_H, bx, by, Z_SQUARE, rgba=(0.1,0.2,1.0,1.0), include_collision=False)
     return f"""
     <model name="start_and_portal">
       <static>true</static>

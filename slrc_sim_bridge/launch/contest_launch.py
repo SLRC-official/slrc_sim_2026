@@ -115,7 +115,8 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time,
                 'port': api_port,
                 'start_x': start_x,
-                'start_y': start_y
+                'start_y': start_y,
+                'watchdog_timeout': 5.0
             }]
         )
     ])

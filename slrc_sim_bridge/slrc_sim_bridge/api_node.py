@@ -26,9 +26,7 @@ from slrc_sim_bridge.utils.trajectory import TrapezoidalProfile
 # -----------------------------------------------------------------------------
 # FastAPI Models
 # -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-# FastAPI Models
-# -----------------------------------------------------------------------------
+
 class VelocityCommand(BaseModel):
     vx: float
     vy: float
@@ -190,6 +188,7 @@ class ApiServiceNode(Node):
     # Logic
     # -------------------------------------------------------------------------
     def publish_cmd_vel(self, vx, vy, omega):
+        """Publish velocity command and update command timestamp."""
         msg = Twist()
         msg.linear.x = float(vx)
         msg.linear.y = float(vy)
@@ -198,72 +197,59 @@ class ApiServiceNode(Node):
         self.last_command_time = time.time()
 
     def watchdog_loop(self):
-        rate = 0.1 # Check every 100ms
+        """
+        Safety watchdog - stops robot if no commands received within timeout.
+        Runs in a separate daemon thread.
+        """
+        rate = 0.1  # Check every 100ms
+        watchdog_triggered = False
+        
         while rclpy.ok():
+            # Skip watchdog during autonomous move operations
             if self.active_move_thread and self.active_move_thread.is_alive():
-                 # Don't watchdog during autonomous move
-                 pass
+                watchdog_triggered = False
             else:
-                if time.time() - self.last_command_time > self.watchdog_timeout:
-                    # Timeout! Stop robot
-                    self.publish_cmd_vel(0.0, 0.0, 0.0)
+                elapsed = time.time() - self.last_command_time
+                if elapsed > self.watchdog_timeout:
+                    # Only log and stop once per timeout event
+                    if not watchdog_triggered:
+                        self.get_logger().warn("Watchdog timeout - stopping robot")
+                        self._publish_stop()
+                        watchdog_triggered = True
+                else:
+                    watchdog_triggered = False
             time.sleep(rate)
+    
+    def _publish_stop(self):
+        """Publish stop command WITHOUT updating last_command_time (avoids watchdog loop)."""
+        msg = Twist()
+        self.cmd_vel_pub.publish(msg)
 
     def execute_move_relative(self, cmd):
         """
-        Naive implementation: Rotate then Move.
-        Or Move X then Move Y?
-        Requirement: "target displacement and rotation ... automatically execute a trapezoidal velocity profile"
-        
-        For simplicity in a diff-drive/holonomic context:
-        If holonomic (omni), we can move in X and Y simultaneously.
-        If diff-drive, we must Rotate -> Move -> Rotate.
-        The 'lightcycle' is typically diff-drive.
-        
-        Let's assume Diff Drive behavior sequence:
-        1. Rotate to face target (dtheta from current pose... oh wait, is this relative to ROBOT frame?)
-        If `move_relative(dx, dy, dtheta)` is in ROBOT FRAME, then:
-           - dx is forward
-           - dy is lateral (0 for diff drive usually, unless holonomic)
-           - dtheta is rotation
-        
-        URDF says 'DiffDrive' plugin. So dy must be 0 or ignored.
-        
-        Sequence:
-        1. Rotate `dtheta`. (Or maybe `atan2(dy, dx)` first? No, relative means dx meters forward.)
-        Wait, standard `move_relative` usually implies:
-        Move `dx` forward, rotate `dtheta`.
-        
-        Let's support just linear (dx) and angular (dtheta). 
-        If dy is provided and non-zero on diff drive, we can't do it easily without arc turn.
-        Let's implement:
-        1. Rotate `dtheta`? OR
-        2. Move `dx`?
-        
-        Actually, let's just do sequential:
-        1. Move `dx` (Trapezoidal Linear)
-        2. Rotate `dtheta` (Trapezoidal Angular)
-        
-        This assumes dx is pure forward motion.
+        Execute a relative move using trapezoidal velocity profiles.
+        Sequence: Linear move (dx) -> Angular move (dtheta)
+        Diff-drive robot: dy is ignored.
         """
+        profile_lin = TrapezoidalProfile(max_vel=0.5, max_accel=0.5, dt=0.05)
+        profile_ang = TrapezoidalProfile(max_vel=1.0, max_accel=1.0, dt=0.05)
         
-        profile_lin = TrapezoidalProfile(max_vel=1.0, max_accel=1.0, dt=0.05) # 20Hz control
-        profile_ang = TrapezoidalProfile(max_vel=2.0, max_accel=2.0, dt=0.05)
-        
-        # 1. Linear Move
+        # Linear Move
         if abs(cmd.dx) > 0.001:
             vels = profile_lin.calculate_distance_profile(cmd.dx)
             for v in vels:
-                if self.stop_requested: break
+                if self.stop_requested:
+                    break
                 self.publish_cmd_vel(v, 0.0, 0.0)
                 time.sleep(0.05)
-            self.publish_cmd_vel(0.0, 0.0, 0.0) # Stop
+            self.publish_cmd_vel(0.0, 0.0, 0.0)
 
-        # 2. Angular Move
+        # Angular Move
         if abs(cmd.dtheta) > 0.001:
             vels = profile_ang.calculate_distance_profile(cmd.dtheta)
             for w in vels:
-                if self.stop_requested: break
+                if self.stop_requested:
+                    break
                 self.publish_cmd_vel(0.0, 0.0, w)
                 time.sleep(0.05)
             self.publish_cmd_vel(0.0, 0.0, 0.0)
