@@ -1,48 +1,105 @@
+#!/usr/bin/env python3
+"""
+SLRC 2026 Contest Launch File
+
+Launches the complete simulation environment:
+- Gazebo world with arena
+- Ares (ego robot) controlled via API
+- Hostile agent patrolling the yellow loop
+- ROS-Gazebo bridge
+- API service for contestant access
+
+Author: kirangunathilaka
+Contact: slrc@uom.lk
+"""
 
 import os
+from pathlib import Path
+import yaml
+
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, AppendEnvironmentVariable, GroupAction, RegisterEventHandler
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    AppendEnvironmentVariable,
+    GroupAction,
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, TextSubstitution
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node, PushRosNamespace
-from launch.event_handlers import OnProcessExit
+
+
+def cell_to_world(i: int, j: int, grid_span: float = 10.0, cell_size: float = 0.4) -> tuple:
+    """Convert grid cell indices to world coordinates."""
+    half = grid_span / 2.0
+    x = -half + (i + 0.5) * cell_size
+    y = half - (j + 0.5) * cell_size
+    return x, y
+
 
 def generate_launch_description():
     pkg_slrc_tron_sim = get_package_share_directory('slrc_tron_sim')
     pkg_slrc_sim_bridge = get_package_share_directory('slrc_sim_bridge')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
 
-    # Arguments
-    team_name_arg = DeclareLaunchArgument('team_name', default_value='team1', description='Name of the team (namespace)')
-    start_x_arg = DeclareLaunchArgument('start_x', default_value='2.0', description='Starting X coordinate')
-    start_y_arg = DeclareLaunchArgument('start_y', default_value='2.0', description='Starting Y coordinate')
-    api_port_arg = DeclareLaunchArgument('api_port', default_value='8000', description='Port for the API service')
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    # Load arena configuration
+    config_path = Path(pkg_slrc_sim_bridge) / 'config' / 'arena_config.yaml'
+    with open(config_path, 'r') as f:
+        arena_config = yaml.safe_load(f)
+    
+    arena = arena_config.get('arena', {})
+    grid_span = arena.get('grid_span', 10.0)
+    cell_size = arena.get('cell_size', 0.4)
+    
+    # Get spawn locations from config
+    locations = arena_config.get('locations', {})
+    start_cell = locations.get('start_cell', [2, 24])
+    start_x, start_y = cell_to_world(start_cell[0], start_cell[1], grid_span, cell_size)
+    
+    # Hostile spawn location (first waypoint in loop)
+    hostile_loop = arena_config.get('hostile_loop', [[2, 2]])
+    hostile_start_idx = arena_config.get('hostile_agent', {}).get('start_index', 0)
+    hostile_cell = hostile_loop[hostile_start_idx] if hostile_loop else [2, 2]
+    hostile_x, hostile_y = cell_to_world(hostile_cell[0], hostile_cell[1], grid_span, cell_size)
 
+    # Arguments
+    team_name_arg = DeclareLaunchArgument(
+        'team_name', default_value='team1',
+        description='Name of the team (namespace)'
+    )
+    api_port_arg = DeclareLaunchArgument(
+        'api_port', default_value='8000',
+        description='Port for the API service'
+    )
+    
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
     team_name = LaunchConfiguration('team_name')
-    start_x = LaunchConfiguration('start_x')
-    start_y = LaunchConfiguration('start_y')
     api_port = LaunchConfiguration('api_port')
 
-    # Ensure Gazebo can find the mesh
-    install_dir = os.path.dirname(pkg_slrc_tron_sim) # .../share
-    set_env = AppendEnvironmentVariable(
-        'GZ_SIM_RESOURCE_PATH',
-        install_dir
-    )
+    # Ensure Gazebo can find meshes
+    install_dir = os.path.dirname(pkg_slrc_tron_sim)
+    set_env = AppendEnvironmentVariable('GZ_SIM_RESOURCE_PATH', install_dir)
 
     # World file
     sdf_file = os.path.join(pkg_slrc_tron_sim, 'worlds', 'encom_grid.sdf')
     
-    # URDF file (Read and replace package://)
-    urdf_file = os.path.join(pkg_slrc_tron_sim, 'urdf', 'lightcycle.urdf')
-    with open(urdf_file, 'r') as inf:
-        robot_desc = inf.read()
-    robot_desc = robot_desc.replace('package://slrc_tron_sim', pkg_slrc_tron_sim)
+    # Load URDF files
+    ares_urdf_file = os.path.join(pkg_slrc_tron_sim, 'urdf', 'ares.urdf')
+    with open(ares_urdf_file, 'r') as f:
+        ares_desc = f.read()
+    ares_desc = ares_desc.replace('package://slrc_tron_sim', pkg_slrc_tron_sim)
+    
+    hostile_urdf_file = os.path.join(pkg_slrc_tron_sim, 'urdf', 'hostile_agent.urdf')
+    with open(hostile_urdf_file, 'r') as f:
+        hostile_desc = f.read()
+    hostile_desc = hostile_desc.replace('package://slrc_tron_sim', pkg_slrc_tron_sim)
 
-    # Gazebo Sim (Run once globally, or per container if isolated)
-    # We assume one GZ instance per launch for isolation as per requirements "One instance = one Gazebo world..."
+    # Bridge Configuration
+    bridge_config_file = os.path.join(pkg_slrc_sim_bridge, 'config', 'bridge.yaml')
+    arena_config_file = os.path.join(pkg_slrc_sim_bridge, 'config', 'arena_config.yaml')
+
+    # Gazebo Sim
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
@@ -50,62 +107,75 @@ def generate_launch_description():
         launch_arguments={'gz_args': f'-r {sdf_file}'}.items(),
     )
 
-    # Bridge Configuration
-    bridge_config_file = os.path.join(pkg_slrc_sim_bridge, 'config', 'bridge.yaml')
+    # Robot State Publisher for Ares
+    ares_rsp = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='ares_rsp',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time, 'robot_description': ares_desc}],
+        remappings=[('/robot_description', '/ares/robot_description')]
+    )
 
-    # Group everything under the team namespace
+    # Spawn Ares
+    spawn_ares = Node(
+        package='ros_gz_sim',
+        executable='create',
+        arguments=[
+            '-string', ares_desc,
+            '-name', 'ares',
+            '-x', str(start_x),
+            '-y', str(start_y),
+            '-z', '0.1'
+        ],
+        output='screen'
+    )
+
+    # Robot State Publisher for Hostile
+    hostile_rsp = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='hostile_rsp',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time, 'robot_description': hostile_desc}],
+        remappings=[('/robot_description', '/hostile/robot_description')]
+    )
+
+    # Spawn Hostile Agent
+    spawn_hostile = Node(
+        package='ros_gz_sim',
+        executable='create',
+        arguments=[
+            '-string', hostile_desc,
+            '-name', 'hostile_agent',
+            '-x', str(hostile_x),
+            '-y', str(hostile_y),
+            '-z', '0.1'
+        ],
+        output='screen'
+    )
+
+    # ROS-Gazebo Bridge
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        parameters=[{'config_file': bridge_config_file}],
+        output='screen'
+    )
+
+    # Hostile Controller
+    hostile_controller = Node(
+        package='slrc_sim_bridge',
+        executable='hostile_controller',
+        name='hostile_controller',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}]
+    )
+
+    # API Service (grouped under team namespace)
     team_group = GroupAction([
         PushRosNamespace(team_name),
-
-        # Robot State Publisher
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time, 'robot_description': robot_desc}]
-        ),
-
-        # Spawn Robot
-        # Note: 'ros_gz_sim create' does NOT support namespace pushing naturally for the GZ entity name,
-        # but the ROS node itself will be namespaced.
-        # We need to make sure the GZ entity name is unique if sharing a world, 
-        # but here we have 1 world per instance.
-        Node(
-            package='ros_gz_sim',
-            executable='create',
-            arguments=[
-                '-string', robot_desc,
-                '-name', 'slrc_lightcycle', # In isolated worlds, this name is fine.
-                '-x', start_x, 
-                '-y', start_y,
-                '-z', '0.1'
-            ],
-            output='screen'
-        ),
-
-        # Bridge
-        Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            parameters=[{'config_file': bridge_config_file}],
-            # Remappings to ensure bridge topics land inside the namespace
-            # ros_gz_bridge with config_file doesn't automatically namespace the GZ side,
-            # but usually we want: /team1/cmd_vel -> /cmd_vel (GZ) (if GZ is not namespaced)
-            # OR if we want to bridge to /team1/cmd_vel on ROS side.
-            # PushRosNamespace handles the ROS side.
-            # GZ side: The simulation plugin is on /cmd_vel, /odom etc. relative to the world or absolute?
-            # Looking at URDF: <topic>/cmd_vel</topic> (absolute).
-            # So GZ topic is /cmd_vel.
-            # ROS topic will be /team1/cmd_vel due to PushRosNamespace.
-            output='screen'
-        ),
-
-        # TF Bridge separate to handle static transforms if needed, 
-        # but here dynamic TF is handled by bridge.yaml.
-        # Note: TF usually needs to be remapped to /tf_static and /tf within namespace?
-        # Actually standard practice is typically /tf is global, but for multi-robot namespaced tf is /team1/tf.
         
-        # API Service Node
         Node(
             package='slrc_sim_bridge',
             executable='api_node',
@@ -116,7 +186,8 @@ def generate_launch_description():
                 'port': api_port,
                 'start_x': start_x,
                 'start_y': start_y,
-                'watchdog_timeout': 5.0
+                'watchdog_timeout': 5.0,
+                'arena_config_file': arena_config_file
             }]
         )
     ])
@@ -124,9 +195,13 @@ def generate_launch_description():
     return LaunchDescription([
         set_env,
         team_name_arg,
-        start_x_arg,
-        start_y_arg,
         api_port_arg,
         gz_sim,
+        ares_rsp,
+        spawn_ares,
+        hostile_rsp,
+        spawn_hostile,
+        bridge,
+        hostile_controller,
         team_group
     ])

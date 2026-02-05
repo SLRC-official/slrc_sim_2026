@@ -1,63 +1,100 @@
-# Bridge configuration
-- ros_topic_name: "cmd_vel"
-  gz_topic_name: "cmd_vel"
+# =============================================================================
+# ROS-Gazebo Bridge Configuration for SLRC 2026
+# Bridges topics between ROS 2 and Gazebo Sim (Ignition)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# ARES (Ego Robot) Topics
+# -----------------------------------------------------------------------------
+
+# Velocity commands
+- ros_topic_name: "ares/cmd_vel"
+  gz_topic_name: "/ares/cmd_vel"
   ros_type_name: "geometry_msgs/msg/Twist"
   gz_type_name: "ignition.msgs.Twist"
   direction: ROS_TO_GZ
 
-- ros_topic_name: "odom"
-  gz_topic_name: "odom"
+# Odometry
+- ros_topic_name: "ares/odom"
+  gz_topic_name: "/ares/odom"
   ros_type_name: "nav_msgs/msg/Odometry"
   gz_type_name: "ignition.msgs.Odometry"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "tf"
-  gz_topic_name: "tf"
+# Transforms
+- ros_topic_name: "ares/tf"
+  gz_topic_name: "/ares/tf"
   ros_type_name: "tf2_msgs/msg/TFMessage"
   gz_type_name: "ignition.msgs.Pose_V"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "imu/data"
-  gz_topic_name: "imu/data"
+# IMU
+- ros_topic_name: "ares/imu/data"
+  gz_topic_name: "/ares/imu/data"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "ignition.msgs.IMU"
   direction: GZ_TO_ROS
 
 # Cameras - Front Left
-- ros_topic_name: "front_left/image_raw"
-  gz_topic_name: "front_left/image_raw"
+- ros_topic_name: "ares/front_left/image_raw"
+  gz_topic_name: "/ares/front_left/image_raw"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "ignition.msgs.Image"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "front_left/camera_info"
-  gz_topic_name: "front_left/camera_info"
+- ros_topic_name: "ares/front_left/camera_info"
+  gz_topic_name: "/ares/front_left/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "ignition.msgs.CameraInfo"
   direction: GZ_TO_ROS
 
 # Cameras - Front Right
-- ros_topic_name: "front_right/image_raw"
-  gz_topic_name: "front_right/image_raw"
+- ros_topic_name: "ares/front_right/image_raw"
+  gz_topic_name: "/ares/front_right/image_raw"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "ignition.msgs.Image"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "front_right/camera_info"
-  gz_topic_name: "front_right/camera_info"
+- ros_topic_name: "ares/front_right/camera_info"
+  gz_topic_name: "/ares/front_right/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "ignition.msgs.CameraInfo"
   direction: GZ_TO_ROS
 
 # Cameras - Floor
-- ros_topic_name: "floor/image_raw"
-  gz_topic_name: "floor/image_raw"
+- ros_topic_name: "ares/floor/image_raw"
+  gz_topic_name: "/ares/floor/image_raw"
   ros_type_name: "sensor_msgs/msg/Image"
   gz_type_name: "ignition.msgs.Image"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "floor/camera_info"
-  gz_topic_name: "floor/camera_info"
+- ros_topic_name: "ares/floor/camera_info"
+  gz_topic_name: "/ares/floor/camera_info"
   ros_type_name: "sensor_msgs/msg/CameraInfo"
   gz_type_name: "ignition.msgs.CameraInfo"
+  direction: GZ_TO_ROS
+
+# -----------------------------------------------------------------------------
+# HOSTILE AGENT Topics
+# -----------------------------------------------------------------------------
+
+# Velocity commands
+- ros_topic_name: "hostile/cmd_vel"
+  gz_topic_name: "/hostile/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "ignition.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# Odometry
+- ros_topic_name: "hostile/odom"
+  gz_topic_name: "/hostile/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "ignition.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+# Transforms (optional - for debugging)
+- ros_topic_name: "hostile/tf"
+  gz_topic_name: "/hostile/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "ignition.msgs.Pose_V"
   direction: GZ_TO_ROS
