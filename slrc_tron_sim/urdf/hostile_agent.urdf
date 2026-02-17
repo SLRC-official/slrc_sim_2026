@@ -118,37 +118,6 @@
   </joint>
 
   <!-- =========================
-       LED - Green glow for hostile
-       ========================= -->
-  <link name="led_link">
-    <visual name="led_base_vis">
-      <origin xyz="0 0 0.005" rpy="0 0 0"/>
-      <geometry>
-        <cylinder radius="0.005" length="0.015"/>
-      </geometry>
-      <material name="led_base_green">
-        <color rgba="0.0 0.8 0.0 1.0"/>
-      </material>
-    </visual>
-
-    <visual name="led_dome_vis">
-      <origin xyz="0 0 0.015" rpy="0 0 0"/>
-      <geometry>
-        <sphere radius="0.008"/>
-      </geometry>
-      <material name="led_glow_green">
-        <color rgba="0.0 1.0 0.0 1.0"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="led_fixed" type="fixed">
-    <parent link="base_link"/>
-    <child link="led_link"/>
-    <origin xyz="-0.05 0 0.058" rpy="0 0 0"/>
-  </joint>
-
-  <!-- =========================
        IMU frame (for odometry)
        ========================= -->
   <link name="imu_link"/>

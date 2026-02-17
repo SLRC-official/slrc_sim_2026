@@ -37,7 +37,7 @@ import math
 from typing import Optional, List
 
 from slrc_sim_bridge.utils.trajectory import TrapezoidalProfile
-from slrc_sim_bridge.config import AresConfig, ArenaConfig
+from slrc_sim_bridge.config import AresConfig, ArenaConfig, HostileConfig
 
 
 # -----------------------------------------------------------------------------
@@ -79,11 +79,13 @@ class ApiServiceNode(Node):
         self.declare_parameter('start_y', 2.0)
         self.declare_parameter('watchdog_timeout', 1.0)
         self.declare_parameter('arena_config_file', '')
+        self.declare_parameter('robot_name', 'ares')
 
         self.api_port = self.get_parameter('port').value
         self.start_x = self.get_parameter('start_x').value
         self.start_y = self.get_parameter('start_y').value
         self.watchdog_timeout = self.get_parameter('watchdog_timeout').value
+        self.robot_name = self.get_parameter('robot_name').value
         arena_config_path = self.get_parameter('arena_config_file').value
 
         # Load arena configuration
@@ -91,17 +93,17 @@ class ApiServiceNode(Node):
 
         self.get_logger().info(f"Starting API Service on port {self.api_port}")
 
-        # Publishers (using /ares/ namespace)
-        self.cmd_vel_pub = self.create_publisher(Twist, '/ares/cmd_vel', 10)
+        # Publishers (using /{self.robot_name}/ namespace)
+        self.cmd_vel_pub = self.create_publisher(Twist, f'/{self.robot_name}/cmd_vel', 10)
         self.marker_pub = self.create_publisher(Marker, 'visualization_marker', 10)
         self.led_pub = self.create_publisher(String, 'led_cmd', 10)
 
         # Subscribers
-        self.create_subscription(Odometry, '/ares/odom', self.odom_callback, 10)
-        self.create_subscription(Image, '/ares/front_left/image_raw', self.cam_fl_callback, 10)
-        self.create_subscription(Image, '/ares/front_right/image_raw', self.cam_fr_callback, 10)
-        self.create_subscription(Image, '/ares/floor/image_raw', self.cam_floor_callback, 10)
-        self.create_subscription(Imu, '/ares/imu/data', self.imu_callback, 10)
+        self.create_subscription(Odometry, f'/{self.robot_name}/odom', self.odom_callback, 10)
+        self.create_subscription(Image, f'/{self.robot_name}/front_left/image_raw', self.cam_fl_callback, 10)
+        self.create_subscription(Image, f'/{self.robot_name}/front_right/image_raw', self.cam_fr_callback, 10)
+        self.create_subscription(Image, f'/{self.robot_name}/floor/image_raw', self.cam_floor_callback, 10)
+        self.create_subscription(Imu, f'/{self.robot_name}/imu/data', self.imu_callback, 10)
 
         # Subscribe to hostile position
         self.hostile_position = None
@@ -128,7 +130,7 @@ class ApiServiceNode(Node):
         # Initialize FastAPI
         self.app = FastAPI(
             title="SLRC 2026 Robot API",
-            description="API for controlling the Ares robot in the SLRC competition",
+            description=f"API for controlling the {self.robot_name} robot in the SLRC competition",
             version="1.0.0"
         )
         
@@ -174,7 +176,7 @@ class ApiServiceNode(Node):
             """Health check and basic info."""
             return {
                 "status": "running",
-                "robot": "ares",
+                "robot": self.robot_name,
                 "team": self.get_namespace().strip('/'),
                 "api_version": "1.0.0"
             }
@@ -200,8 +202,15 @@ class ApiServiceNode(Node):
                 self.active_move_thread.join(timeout=0.1)
 
             # Clamp velocities
-            v = max(-AresConfig.MAX_LINEAR_VEL, min(AresConfig.MAX_LINEAR_VEL, cmd.velocity))
-            w = max(-AresConfig.MAX_ANGULAR_VEL, min(AresConfig.MAX_ANGULAR_VEL, cmd.omega))
+            if self.robot_name == 'hostile':
+                max_v = HostileConfig.PATROL_SPEED
+                max_w = HostileConfig.ROTATION_SPEED
+            else:
+                max_v = AresConfig.MAX_LINEAR_VEL
+                max_w = AresConfig.MAX_ANGULAR_VEL
+
+            v = max(-max_v, min(max_v, cmd.velocity))
+            w = max(-max_w, min(max_w, cmd.omega))
 
             self.publish_cmd_vel(v, w)
             return {"status": "executed", "velocity": v, "omega": w}
@@ -397,6 +406,64 @@ class ApiServiceNode(Node):
             self.marker_pub.publish(marker)
             return {"status": "marker_published"}
 
+            self.marker_pub.publish(marker)
+            return {"status": "marker_published"}
+
+    # -------------------------------------------------------------------------
+    # Callbacks
+    # -------------------------------------------------------------------------
+    def odom_callback(self, msg: Odometry):
+        """Update current odometry state."""
+        self.current_odom = msg
+
+    def cam_fl_callback(self, msg: Image):
+        """Update front-left camera frame."""
+        self.latest_frames['front_left'] = self._process_image(msg)
+
+    def cam_fr_callback(self, msg: Image):
+        """Update front-right camera frame."""
+        self.latest_frames['front_right'] = self._process_image(msg)
+
+    def cam_floor_callback(self, msg: Image):
+        """Update floor camera frame."""
+        self.latest_frames['floor'] = self._process_image(msg)
+
+    def imu_callback(self, msg: Imu):
+        """Update IMU data."""
+        self.current_imu = msg
+
+    def hostile_position_callback(self, msg: PoseStamped):
+        """Update known position of the hostile robot."""
+        self.hostile_position = msg
+
+    def _process_image(self, msg: Image) -> bytes:
+        """Convert ROS Image message to JPEG bytes."""
+        try:
+            # Basic conversion for BGR8/RGB8
+            if msg.encoding == 'bgr8':
+                img = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, 3)
+            elif msg.encoding == 'rgb8':
+                img = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, 3)
+                img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            else:
+                # Fallback for other encodings if needed
+                return None
+
+            _, jpeg = cv2.imencode('.jpg', img)
+            return jpeg.tobytes()
+        except Exception as e:
+            self.get_logger().error(f"Image processing error: {e}")
+            return None
+
+    def generate_mjpeg(self, cam_id: str):
+        """Generator for MJPEG stream."""
+        while True:
+            frame = self.latest_frames.get(cam_id)
+            if frame:
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            time.sleep(0.05)
+
     # -------------------------------------------------------------------------
     # Helper Methods
     # -------------------------------------------------------------------------
@@ -445,15 +512,25 @@ class ApiServiceNode(Node):
 
     def execute_move_relative(self, cmd):
         """Execute a relative move using trapezoidal velocity profiles with configured limits."""
-        # Use AresConfig for limits
+        if self.robot_name == 'hostile':
+            max_v = HostileConfig.PATROL_SPEED
+            max_w = HostileConfig.ROTATION_SPEED
+            acc_v = HostileConfig.LINEAR_ACCEL
+            acc_w = HostileConfig.ANGULAR_ACCEL
+        else:
+            max_v = AresConfig.MAX_LINEAR_VEL
+            max_w = AresConfig.MAX_ANGULAR_VEL
+            acc_v = AresConfig.MAX_LINEAR_ACCEL
+            acc_w = AresConfig.MAX_ANGULAR_ACCEL
+
         profile_lin = TrapezoidalProfile(
-            max_vel=AresConfig.MAX_LINEAR_VEL, 
-            max_accel=AresConfig.MAX_LINEAR_ACCEL, 
+            max_vel=max_v, 
+            max_accel=acc_v, 
             dt=0.05
         )
         profile_ang = TrapezoidalProfile(
-            max_vel=AresConfig.MAX_ANGULAR_VEL, 
-            max_accel=AresConfig.MAX_ANGULAR_ACCEL, 
+            max_vel=max_w, 
+            max_accel=acc_w, 
             dt=0.05
         )
 
