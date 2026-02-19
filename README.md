@@ -2,10 +2,10 @@
 
 Run the Tron simulation (Gazebo arena + Ares and Hostile robots) in Docker and control it from your machine via a REST API.
 
-## What you need
+## Requirements
 
-- **Computer**: Ubuntu 22.04 or similar, with Docker installed and a display (X11).
-- **On your machine**: Python 3 and `requests` (e.g. `pip install requests`). No ROS 2 or Gazebo required.
+- **OS**: Ubuntu 20 or higher / Mac (haven't tested)
+- **Other**: Docker, and for running the test/controller scripts: Python 3 and `requests` (e.g. `pip install requests`). For the Gazebo window to appear you need a display (on Linux/Mac: X11/Wayland display systems).
 
 ## Run the simulation
 
@@ -40,7 +40,7 @@ Run the hostile controller (predefined path):
 python3 src/slrc_sim_bridge/scripts/hostile_controller.py
 ```
 
-You can also send HTTP requests from your own code to `localhost:8000` (or 8001) for velocity commands, odometry, camera images, and arena metadata, as described in the competition API spec.
+Can also send HTTP requests from your own code to `localhost:8000` (or 8001) for velocity commands, odometry, camera images, and arena metadata (Start Location etc). Use the test_api as example for now
 
 ## Troubleshooting
 
