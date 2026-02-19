@@ -5,7 +5,6 @@ find_package(ament_cmake REQUIRED)
 
 # Install non-compiled resources
 install(DIRECTORY
-  launch
   worlds
   urdf
   meshes

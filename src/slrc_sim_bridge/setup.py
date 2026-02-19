@@ -13,9 +13,9 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', [
-            'launch/contest_launch.py',
-            'launch/host_sim.launch.py',
-            'launch/container_bridge.launch.py'
+            'launch/container_sim.launch.py',
+            'launch/container_bridge.launch.py',
+            'launch/container_full.launch.py'
         ]),
         ('share/' + package_name + '/config', [
             'config/bridge.yaml',
