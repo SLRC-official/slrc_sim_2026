@@ -118,10 +118,6 @@ def generate_launch_description():
             }]
         )
     ])
-    
-    # We do NOT run hostile_controller automatically inside container yet
-    # Kept manual as per original requirement, or can be added here if desired.
-    # For now, let's keep it manual as established in previous flow.
 
     return LaunchDescription([
         team_name_arg,

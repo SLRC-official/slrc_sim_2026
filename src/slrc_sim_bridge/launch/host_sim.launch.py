@@ -16,6 +16,8 @@ Does NOT launch:
 """
 
 import os
+os.environ["ROS_DOMAIN_ID"] = "10"
+
 from pathlib import Path
 import yaml
 from ament_index_python.packages import get_package_share_directory
@@ -67,6 +69,8 @@ def generate_launch_description():
     # Ensure Gazebo can find meshes
     install_dir = os.path.dirname(pkg_slrc_tron_sim)
     set_env = AppendEnvironmentVariable('GZ_SIM_RESOURCE_PATH', install_dir)
+    # Ignition Transport partition: must match container (run_container.sh) so bridge and Gazebo communicate
+    set_ign_partition = AppendEnvironmentVariable('IGN_PARTITION', 'slrc_sim')
 
     # World file
     sdf_file = os.path.join(pkg_slrc_tron_sim, 'worlds', 'encom_grid.sdf')
@@ -138,6 +142,7 @@ def generate_launch_description():
 
     return LaunchDescription([
         set_env,
+        set_ign_partition,
         gz_sim,
         ares_rsp,
         spawn_ares,

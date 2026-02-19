@@ -29,3 +29,7 @@ echo ">>> Done. You're now in: $WS"
 
 export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:$(ros2 pkg prefix slrc_tron_sim)/share
 export IGN_GAZEBO_RESOURCE_PATH=$IGN_GAZEBO_RESOURCE_PATH:$(ros2 pkg prefix slrc_tron_sim)/share
+
+echo ">>> Patching api_node shebang to use venv python..."
+sed -i '1s|^#!.*python.*$|#!/home/kirangunathilaka/venvs/ros2/bin/python|' "$WS/install/slrc_sim_bridge/lib/slrc_sim_bridge/api_node"
+echo ">>> Patch applied."

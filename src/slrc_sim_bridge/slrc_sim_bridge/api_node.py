@@ -21,6 +21,7 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Image, Imu
 from std_msgs.msg import String
 from visualization_msgs.msg import Marker
+from rclpy.qos import qos_profile_sensor_data, QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 
 import threading
 import uvicorn
@@ -99,7 +100,11 @@ class ApiServiceNode(Node):
         self.led_pub = self.create_publisher(String, 'led_cmd', 10)
 
         # Subscribers
-        self.create_subscription(Odometry, f'/{self.robot_name}/odom', self.odom_callback, 10)
+        # Use default QoS profile for odometry (most compatible with bridge)
+        # Match bridge topic name exactly (no leading slash to match bridge.yaml)
+        odom_topic = f'{self.robot_name}/odom'
+        self.get_logger().info(f"Subscribing to odometry topic: '{odom_topic}'")
+        self.create_subscription(Odometry, odom_topic, self.odom_callback, qos_profile_sensor_data)
         self.create_subscription(Image, f'/{self.robot_name}/front_left/image_raw', self.cam_fl_callback, 10)
         self.create_subscription(Image, f'/{self.robot_name}/front_right/image_raw', self.cam_fr_callback, 10)
         self.create_subscription(Image, f'/{self.robot_name}/floor/image_raw', self.cam_floor_callback, 10)
@@ -245,6 +250,7 @@ class ApiServiceNode(Node):
         async def get_odometry():
             """Get current robot odometry (pose and velocity)."""
             if self.current_odom is None:
+                self.get_logger().warn(f"Odometry requested but not available for {self.robot_name} (topic: {self.robot_name}/odom)")
                 raise HTTPException(status_code=503, detail="No odometry data available")
 
             p = self.current_odom.pose.pose.position
@@ -414,6 +420,8 @@ class ApiServiceNode(Node):
     # -------------------------------------------------------------------------
     def odom_callback(self, msg: Odometry):
         """Update current odometry state."""
+        if self.current_odom is None:
+            self.get_logger().info(f"First odometry received for {self.robot_name}!")
         self.current_odom = msg
 
     def cam_fl_callback(self, msg: Image):

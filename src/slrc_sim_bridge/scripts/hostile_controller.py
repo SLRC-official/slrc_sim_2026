@@ -110,9 +110,12 @@ def main():
     print(f"Loaded path with {len(path_points)} points.")
 
     # Find nearest point index
-    pose = get_odometry()
-    if not pose:
-        return
+    pose = None
+    print("Waiting for initial odometry...")
+    while pose is None:
+        pose = get_odometry()
+        if not pose:
+            time.sleep(1)
     
     curr_x = pose['x']
     curr_y = pose['y']
