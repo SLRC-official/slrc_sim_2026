@@ -1,65 +1,85 @@
 
 import math
 
+
 class TrapezoidalProfile:
     def __init__(self, max_vel, max_accel, dt):
         self.max_vel = max_vel
         self.max_accel = max_accel
         self.dt = dt
 
+    def _velocity_at_time(self, t, t_accel, t_coast, is_triangle):
+        """
+        Continuous trapezoidal (or triangle) profile: velocity at time t.
+        Returns magnitude (non-negative). Caller applies direction.
+        """
+        if is_triangle:
+            # Triangle: accel to peak then decel. Total time 2*t_accel.
+            if t <= 0:
+                return 0.0
+            if t < t_accel:
+                return self.max_accel * t
+            if t < 2 * t_accel:
+                return self.max_accel * (2 * t_accel - t)
+            return 0.0
+        else:
+            # Trapezoid: accel, coast, decel.
+            t_decel_start = t_accel + t_coast
+            t_total = 2 * t_accel + t_coast
+            if t <= 0:
+                return 0.0
+            if t < t_accel:
+                return self.max_accel * t
+            if t < t_decel_start:
+                return self.max_vel
+            if t < t_total:
+                return self.max_vel - self.max_accel * (t - t_decel_start)
+            return 0.0
+
     def calculate_distance_profile(self, distance):
         """
         Generates a sequence of velocity commands to move 'distance' meters
-        with a trapezoidal velocity profile.
-        Returns a list of velocities.
+        (or radians for angular) with a trapezoidal velocity profile.
+
+        Uses time-based sampling so that applying each velocity for dt seconds
+        gives total distance equal to |distance| (within one step). This fixes
+        the previous step-count approach which caused large errors.
+
+        Returns a list of velocities (signed).
         """
         if distance == 0:
             return []
 
         direction = 1.0 if distance > 0 else -1.0
         dist_mag = abs(distance)
-        
-        # Calculate time to accelerate to max_vel
-        t_accel = self.max_vel / self.max_accel
-        d_accel = 0.5 * self.max_accel * t_accel**2
 
-        if 2 * d_accel > dist_mag:
-            # Triangle profile (we don't reach max_vel)
-            # d_accel_actual = dist_mag / 2
-            # 0.5 * a * t^2 = d/2 => t = sqrt(d/a)
+        # Time to accelerate to max_vel and distance covered in that time
+        t_accel_full = self.max_vel / self.max_accel
+        d_accel_full = 0.5 * self.max_accel * t_accel_full ** 2
+
+        if 2 * d_accel_full >= dist_mag:
+            # Triangle profile: we never reach max_vel
+            # dist_mag = a * t_accel^2  =>  t_accel = sqrt(dist_mag / a)
             t_accel = math.sqrt(dist_mag / self.max_accel)
-            t_coast = 0
-            # peak_vel = self.max_accel * t_accel
+            t_coast = 0.0
+            is_triangle = True
+            t_total = 2 * t_accel
         else:
-            # M-Trapezoid profile
-            d_coast = dist_mag - 2 * d_accel
+            # Trapezoid: accel, coast at max_vel, decel
+            t_accel = t_accel_full
+            d_coast = dist_mag - 2 * d_accel_full
             t_coast = d_coast / self.max_vel
+            is_triangle = False
+            t_total = 2 * t_accel + t_coast
 
-        # Generate profile steps
+        # Sample velocity at t = 0, dt, 2*dt, ... until we reach/pass t_total
         velocities = []
-        
-        # Acceleration phase
-        steps_accel = int(t_accel / self.dt)
-        for i in range(steps_accel):
-            v = self.max_accel * (i * self.dt)
-            velocities.append(v * direction)
-            
-        # Coast phase
-        steps_coast = int(t_coast / self.dt)
-        peak_vel = (self.max_accel * t_accel) * direction
-        for i in range(steps_coast):
-            velocities.append(peak_vel)
-            
-        # Deceleration phase
-        # Note: Ideally exact mirror of acceleration
-        # We start from current velocity and reduce
-        current_v = abs(peak_vel)
-        for i in range(steps_accel):
-            current_v -= self.max_accel * self.dt
-            if current_v < 0: current_v = 0
-            velocities.append(current_v * direction)
+        t = 0.0
+        while t < t_total:
+            v_mag = self._velocity_at_time(t, t_accel, t_coast, is_triangle)
+            velocities.append(v_mag * direction)
+            t += self.dt
 
-        # Final stop
+        # Final zero to ensure we stop
         velocities.append(0.0)
-        
         return velocities

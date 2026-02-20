@@ -19,7 +19,7 @@ echo "  - Gazebo + spawn + bridge + API start together (single launch, same part
 echo "  - Once up, use test_api.py or hostile_controller.py on the host (localhost:8000 / 8001)."
 echo ""
 
-docker run -it --rm \
+docker run --rm \
     --net=host \
     --ipc=host \
     --pid=host \

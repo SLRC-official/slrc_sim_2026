@@ -108,11 +108,11 @@ class ApiServiceNode(Node):
         self.create_subscription(Image, f'/{self.robot_name}/front_left/image_raw', self.cam_fl_callback, 10)
         self.create_subscription(Image, f'/{self.robot_name}/front_right/image_raw', self.cam_fr_callback, 10)
         self.create_subscription(Image, f'/{self.robot_name}/floor/image_raw', self.cam_floor_callback, 10)
-        self.create_subscription(Imu, f'/{self.robot_name}/imu/data', self.imu_callback, 10)
+        self.create_subscription(Imu, f'/{self.robot_name}/imu/data', self.imu_callback, qos_profile_sensor_data)
 
-        # Subscribe to hostile position
+        # Subscribe to hostile position (via Odometry)
         self.hostile_position = None
-        self.create_subscription(PoseStamped, '/hostile/position', self.hostile_position_callback, 10)
+        self.create_subscription(Odometry, '/hostile/odom', self.hostile_position_callback, 10)
 
         # State
         self.current_odom = None
@@ -251,7 +251,14 @@ class ApiServiceNode(Node):
             """Get current robot odometry (pose and velocity)."""
             if self.current_odom is None:
                 self.get_logger().warn(f"Odometry requested but not available for {self.robot_name} (topic: {self.robot_name}/odom)")
-                raise HTTPException(status_code=503, detail="No odometry data available")
+                raise HTTPException(
+                    status_code=503,
+                    detail=(
+                        "No odometry data available. "
+                        "Start the simulation and ROS–Gazebo bridge so they publish to "
+                        f"topic '{self.robot_name}/odom'."
+                    )
+                )
 
             p = self.current_odom.pose.pose.position
             o = self.current_odom.pose.pose.orientation
@@ -274,7 +281,14 @@ class ApiServiceNode(Node):
         async def get_imu():
             """Get current IMU readings."""
             if self.current_imu is None:
-                raise HTTPException(status_code=503, detail="No IMU data available")
+                raise HTTPException(
+                    status_code=503,
+                    detail=(
+                        "No IMU data available. "
+                        "Start the simulation and ROS–Gazebo bridge so they publish to "
+                        f"topic '/{self.robot_name}/imu/data'."
+                    )
+                )
 
             return {
                 "angular_velocity": {
@@ -357,17 +371,23 @@ class ApiServiceNode(Node):
         async def get_hostile_position():
             """Get current hostile robot position."""
             if self.hostile_position is None:
-                raise HTTPException(status_code=503, detail="Hostile position not available")
+                raise HTTPException(
+                    status_code=503,
+                    detail=(
+                        "Hostile position not available. "
+                        "Start the hostile controller so it publishes to topic '/hostile/odom'."
+                    )
+                )
             
-            p = self.hostile_position.pose.position
-            o = self.hostile_position.pose.orientation
+            p = self.hostile_position.pose.pose.position
+            o = self.hostile_position.pose.pose.orientation
             yaw = self._quaternion_to_yaw(o)
             
             return {
                 "x": p.x,
                 "y": p.y,
                 "yaw": yaw,
-                "timestamp": self.hostile_position.header.stamp.sec
+                # "timestamp": self.hostile_position.header.stamp.sec # optional
             }
 
         @self.app.get("/start_coordinate")
@@ -412,9 +432,6 @@ class ApiServiceNode(Node):
             self.marker_pub.publish(marker)
             return {"status": "marker_published"}
 
-            self.marker_pub.publish(marker)
-            return {"status": "marker_published"}
-
     # -------------------------------------------------------------------------
     # Callbacks
     # -------------------------------------------------------------------------
@@ -440,7 +457,7 @@ class ApiServiceNode(Node):
         """Update IMU data."""
         self.current_imu = msg
 
-    def hostile_position_callback(self, msg: PoseStamped):
+    def hostile_position_callback(self, msg: Odometry):
         """Update known position of the hostile robot."""
         self.hostile_position = msg
 
@@ -542,6 +559,9 @@ class ApiServiceNode(Node):
             dt=0.05
         )
 
+        # Use ROS Rate for simulation time sync
+        rate = self.create_rate(20)  # 20 Hz = 0.05s period
+
         # Linear Move (distance)
         if abs(cmd.distance) > 0.001:
             vels = profile_lin.calculate_distance_profile(cmd.distance)
@@ -549,7 +569,7 @@ class ApiServiceNode(Node):
                 if self.stop_requested:
                     break
                 self.publish_cmd_vel(v, 0.0)
-                time.sleep(0.05)
+                rate.sleep()
             self.publish_cmd_vel(0.0, 0.0)
 
         # Angular Move (rotation)
@@ -559,7 +579,7 @@ class ApiServiceNode(Node):
                 if self.stop_requested:
                     break
                 self.publish_cmd_vel(0.0, w)
-                time.sleep(0.05)
+                rate.sleep()
             self.publish_cmd_vel(0.0, 0.0)
         
         # Ensure stop at end

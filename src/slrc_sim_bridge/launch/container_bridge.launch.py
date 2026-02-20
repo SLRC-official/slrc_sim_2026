@@ -99,25 +99,22 @@ def generate_launch_description():
         }]
     )
 
-    # API Service (grouped under team namespace)
-    team_group = GroupAction([
-        PushRosNamespace(team_name),
-        
-        Node(
-            package='slrc_sim_bridge',
-            executable='api_node',
-            name='api_service',
-            output='screen',
-            parameters=[{
-                'use_sim_time': use_sim_time,
-                'port': api_port,
-                'start_x': start_x,
-                'start_y': start_y,
-                'watchdog_timeout': 5.0,
-                'arena_config_file': arena_config_file
-            }]
-        )
-    ])
+    # API Service (No namespace, purely based on node parameters/remappings if needed)
+    # The node itself publishes to /{robot_name}/cmd_vel etc. based on its internal logic
+    api_service = Node(
+        package='slrc_sim_bridge',
+        executable='api_node',
+        name='api_service',
+        output='screen',
+        parameters=[{
+            'use_sim_time': use_sim_time,
+            'port': api_port,
+            'start_x': start_x,
+            'start_y': start_y,
+            'watchdog_timeout': 5.0,
+            'arena_config_file': arena_config_file
+        }]
+    )
 
     return LaunchDescription([
         team_name_arg,
@@ -125,5 +122,5 @@ def generate_launch_description():
         hostile_api_port_arg,
         bridge,
         hostile_api,
-        team_group
+        api_service
     ])
