@@ -8,8 +8,6 @@ install(DIRECTORY
   worlds
   urdf
   meshes
-  config
-  scripts
   DESTINATION share/${PROJECT_NAME}
 )
 
