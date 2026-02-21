@@ -26,8 +26,8 @@ LOOP_URL = f"{API_URL}/arena/hostile_loop"
 STOP_URL = f"{API_URL}/stop"
 
 # Hostile behavior params
-DIRECTION_SWITCH_PROB = 0.10  # Probability to switch direction after a segment
-PatrolSpeed = 0.5
+DIRECTION_SWITCH_PROB = 0.01  # Probability to switch direction after a segment
+PatrolSpeed = 1
 
 def normalize_angle(angle):
     while angle > math.pi:
@@ -72,17 +72,12 @@ def move_robot(distance, rotation):
                 break
         
         # Wait for move to finish
-        # Heuristic wait: dist/0.5 + rot/1.0 + buffer
-        est_time = abs(distance)/0.5 + abs(rotation)/1.0
+        est_time = abs(distance)/PatrolSpeed + abs(rotation)/PatrolSpeed
         time.sleep(est_time)
         
         # Poll 409 until we can move again (means idle)
         # Actually checking if we can post again is a good check
         while True:
-            # We can check simple health or just try to start next move? 
-            # Better: check if we are moving? API doesn't expose 'is_moving' directly 
-            # but move_relative returns 409 if moving.
-             # So we can't 'check' without side effects unless we try a 0 move.
             dummy = requests.post(MOVES_URL, json={"distance": 0.0, "rotation": 0.0}, timeout=1)
             if dummy.status_code == 200:
                 break
@@ -109,30 +104,23 @@ def main():
 
     print(f"Loaded path with {len(path_points)} points.")
 
-    # Find nearest point index
-    pose = None
-    print("Waiting for initial odometry...")
-    while pose is None:
-        pose = get_odometry()
-        if not pose:
-            time.sleep(1)
-    
-    curr_x = pose['x']
-    curr_y = pose['y']
-    
-    min_dist = float('inf')
+    # We assume we always start at index 0
     curr_idx = 0
-    
-    for i, pt in enumerate(path_points):
-        d = math.hypot(pt['x'] - curr_x, pt['y'] - curr_y)
-        if d < min_dist:
-            min_dist = d
-            curr_idx = i
-            
     print(f"Starting at index {curr_idx}")
     
+    # The world coordinates of the 0-th index
+    spawn_wx = path_points[0]['x']
+    spawn_wy = path_points[0]['y']
+
     direction = 1 # 1 for forward list, -1 for backward
     
+    print("Waiting for initial odometry...")
+    while True:
+        pose = get_odometry()
+        if pose:
+            break
+        time.sleep(1)
+
     while True:
         # Check random reversal
         if random.random() < DIRECTION_SWITCH_PROB:
@@ -141,9 +129,13 @@ def main():
             
         # Determine next index
         next_idx = (curr_idx + direction) % len(path_points)
-        target = path_points[next_idx]
+        target_world = path_points[next_idx]
+
+        # Convert target world coordinate to local odometry frame
+        target_local_x = target_world['x'] - spawn_wx
+        target_local_y = target_world['y'] - spawn_wy
         
-        # Get current pose
+        # Get current pose (in local odometry frame)
         pose = get_odometry()
         if not pose:
             time.sleep(1)
@@ -153,9 +145,9 @@ def main():
         curr_y = pose['y']
         curr_yaw = pose['yaw']
         
-        # Calculate moves
-        dx = target['x'] - curr_x
-        dy = target['y'] - curr_y
+        # Calculate moves relative to current local pose
+        dx = target_local_x - curr_x
+        dy = target_local_y - curr_y
         dist = math.hypot(dx, dy)
         target_yaw = math.atan2(dy, dx)
         

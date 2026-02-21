@@ -20,6 +20,7 @@ locations:
 
 # Yellow hostile loop path (list of [i, j] grid cell indices)
 # This is a closed loop - the robot travels from first to last, then wraps
+# So robot spawns at first index and travels to last, then wraps to first 
 hostile_loop:
   - [2, 2]
   - [3, 2]

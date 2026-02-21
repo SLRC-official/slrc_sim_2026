@@ -172,10 +172,6 @@ class ApiServiceNode(Node):
         }
 
     def setup_routes(self):
-        # ... (Routes are largely unchanged, but I'll make sure they use the config limits implicitly) ...
-        # =====================================================================
-        # System Routes
-        # =====================================================================
         @self.app.get("/")
         async def root():
             """Health check and basic info."""
@@ -196,9 +192,7 @@ class ApiServiceNode(Node):
                 "hostile_tracking": self.hostile_position is not None
             }
 
-        # =====================================================================
         # Motion Control Routes
-        # =====================================================================
         @self.app.post("/set_velocity")
         async def set_velocity(cmd: VelocityCommand):
             """Set robot velocity (differential drive) with limits."""
@@ -243,9 +237,7 @@ class ApiServiceNode(Node):
             self.active_move_thread.start()
             return {"status": "started", "distance": cmd.distance, "rotation": cmd.rotation}
 
-        # =====================================================================
         # Sensor Routes
-        # =====================================================================
         @self.app.get("/odometry")
         async def get_odometry():
             """Get current robot odometry (pose and velocity)."""
@@ -303,9 +295,7 @@ class ApiServiceNode(Node):
                 }
             }
 
-        # =====================================================================
         # Camera Routes
-        # =====================================================================
         @self.app.get("/camera/{cam_id}/frame")
         async def camera_frame(cam_id: str):
             """Get a single JPEG frame from the specified camera."""
@@ -331,9 +321,7 @@ class ApiServiceNode(Node):
                 media_type="multipart/x-mixed-replace; boundary=frame"
             )
 
-        # =====================================================================
         # Arena Routes
-        # =====================================================================
         @self.app.get("/arena/metadata")
         async def get_arena_metadata():
             """Get arena configuration metadata."""
@@ -395,9 +383,7 @@ class ApiServiceNode(Node):
             """Get the ego robot start position in world coordinates."""
             return {"x": self.start_x, "y": self.start_y}
 
-        # =====================================================================
         # Utility Routes
-        # =====================================================================
         @self.app.post("/utility/set_led")
         async def set_led(cmd: LedCommand):
             """Set robot LED state and color."""

@@ -31,15 +31,3 @@ class AresConfig:
     # Dimensions
     WHEEL_RADIUS = 0.03
     WHEEL_SEPARATION = 0.16
-
-
-class HostileConfig:
-    # Motion parameters for Trapezoidal Profile
-    PATROL_SPEED = 0.8  # m/s (Target cruise speed)
-    ROTATION_SPEED = 2.0  # rad/s (slightly reduced for less slip)
-    LINEAR_ACCEL = 1.0  # m/s^2
-    ANGULAR_ACCEL = 2.0  # rad/s^2 (slightly reduced for less slip)
-
-    # Behavior
-    DIRECTION_SWITCH_PROB = 0.05  # Probability to switch direction at segment ends
-    START_INDEX = 0  # Index in the Hostile Loop to start from
