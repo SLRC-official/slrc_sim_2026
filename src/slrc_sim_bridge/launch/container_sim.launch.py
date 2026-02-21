@@ -95,7 +95,7 @@ def generate_launch_description():
         name='gz_server',
     )
 
-    # GUI: connects to server, uses Xvfb (VNC to view). Delayed so server loads world first.
+    # GUI: connects to server. Delayed so server loads world first.
     gz_gui = TimerAction(
         period=4.0,
         actions=[

@@ -5,18 +5,13 @@ FROM ros:humble-ros-base
 ENV DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-c"]
 
-# ROS + Gazebo Sim + Bridge + GUI (Xvfb for virtual display when host GL fails)
+# ROS + Gazebo Sim + Bridge
 RUN apt-get update && apt-get install -y \
     ros-humble-ros-gz-sim \
     ros-humble-ros-gz-bridge \
     ros-humble-robot-state-publisher \
     python3-pip \
     libopencv-dev \
-    libgl1-mesa-glx \
-    libegl1-mesa \
-    libxcb-xinerama0 \
-    xvfb \
-    x11vnc \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install \

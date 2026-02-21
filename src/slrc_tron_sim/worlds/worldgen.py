@@ -188,11 +188,23 @@ def path_model():
     </model>
 """.rstrip()
 
+# -------- Required Gazebo system plugins --------
+# When any <plugin> is defined in the world, defaults are not loaded; all required
+# plugins must be listed explicitly (Physics, UserCommands, SceneBroadcaster, Sensors).
+SDF_PLUGINS = """
+    <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="libignition-gazebo-user-commands-system.so" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="libignition-gazebo-scene-broadcaster-system.so" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+"""
+
 # -------- SDF assembly --------
 sdf = f"""<?xml version="1.0" ?>
 <sdf version="1.9">
   <world name="slrc_arena_from_image">
-
+{SDF_PLUGINS}
     <gravity>0 0 -9.81</gravity>
 
     <scene>
