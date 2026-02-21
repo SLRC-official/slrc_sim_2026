@@ -7,7 +7,6 @@ Launches:
 - ROS-Gazebo Parameter Bridge
 - API Service for Ares (Port 8000)
 - API Service for Hostile (Port 8001)
-- Hostile Controller Logic
 """
 
 import os
@@ -17,10 +16,9 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
-    GroupAction,
 )
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node, PushRosNamespace
+from launch_ros.actions import Node
 
 
 def cell_to_world(i: int, j: int, grid_span: float = 10.0, cell_size: float = 0.4) -> tuple:
@@ -46,9 +44,8 @@ def generate_launch_description():
     start_cell = locations.get('start_cell', [2, 24])
     start_x, start_y = cell_to_world(start_cell[0], start_cell[1], grid_span, cell_size)
     
-    hostile_loop = arena_config.get('hostile_loop', [[2, 2]])
-    hostile_start_idx = arena_config.get('hostile_agent', {}).get('start_index', 0)
-    hostile_cell = hostile_loop[hostile_start_idx] if hostile_loop else [2, 2]
+    # Hostile spawn (simple fixed location)
+    hostile_cell = locations.get('hostile_spawn', [2, 2])
     hostile_x, hostile_y = cell_to_world(hostile_cell[0], hostile_cell[1], grid_span, cell_size)
 
     # Arguments
@@ -99,8 +96,7 @@ def generate_launch_description():
         }]
     )
 
-    # API Service (No namespace, purely based on node parameters/remappings if needed)
-    # The node itself publishes to /{robot_name}/cmd_vel etc. based on its internal logic
+    # API Service
     api_service = Node(
         package='slrc_sim_bridge',
         executable='api_node',

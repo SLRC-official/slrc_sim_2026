@@ -10,6 +10,7 @@ Launches:
 """
 
 import os
+import shutil
 
 # Container environment: same domain and partition for bridge (started later via exec)
 os.environ.setdefault("ROS_DOMAIN_ID", "10")
@@ -22,6 +23,8 @@ from launch import LaunchDescription
 from launch.actions import (
     IncludeLaunchDescription,
     AppendEnvironmentVariable,
+    TimerAction,
+    ExecuteProcess,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -54,10 +57,8 @@ def generate_launch_description():
     start_cell = locations.get('start_cell', [2, 24])
     start_x, start_y = cell_to_world(start_cell[0], start_cell[1], grid_span, cell_size)
 
-    # Spawn Hostile
-    hostile_loop = arena_config.get('hostile_loop', [[2, 2]])
-    hostile_start_idx = arena_config.get('hostile_agent', {}).get('start_index', 0)
-    hostile_cell = hostile_loop[hostile_start_idx] if hostile_loop else [2, 2]
+    # Spawn Hostile (simple fixed location from config)
+    hostile_cell = locations.get('hostile_spawn', [2, 2])
     hostile_x, hostile_y = cell_to_world(hostile_cell[0], hostile_cell[1], grid_span, cell_size)
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
@@ -81,12 +82,30 @@ def generate_launch_description():
         hostile_desc = f.read()
     hostile_desc = hostile_desc.replace('package://slrc_tron_sim', pkg_slrc_tron_sim)
 
-    # Gazebo Sim
-    gz_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
-        ),
-        launch_arguments={'gz_args': f'-r {sdf_file}'}.items(),
+    # Server: -s = server only, --headless-rendering = EGL surfaceless for camera sensors.
+    # Use full path (container may not have gz in PATH). Gazebo v6 provides ign or gz.
+    gz_bin = shutil.which('gz') or shutil.which('ign')
+    if not gz_bin:
+        gz_bin = '/usr/bin/gz' if os.path.isfile('/usr/bin/gz') else '/usr/bin/ign'
+    gz_subcmd = 'sim' if (gz_bin and 'gz' in gz_bin) else 'gazebo'
+    gz_server = ExecuteProcess(
+        cmd=[gz_bin, gz_subcmd, '-s', '-r', '-v', '4', '--headless-rendering', sdf_file, '--force-version', '6'],
+        output='screen',
+        shell=False,
+        name='gz_server',
+    )
+
+    # GUI: connects to server, uses Xvfb (VNC to view). Delayed so server loads world first.
+    gz_gui = TimerAction(
+        period=4.0,
+        actions=[
+            ExecuteProcess(
+                cmd=[gz_bin, gz_subcmd, '-g', '--force-version', '6'],
+                output='screen',
+                shell=False,
+                name='gz_gui',
+            )
+        ]
     )
 
     # Robot State Publishers
@@ -138,7 +157,8 @@ def generate_launch_description():
     return LaunchDescription([
         set_env,
         set_ign_partition,
-        gz_sim,
+        gz_server,
+        gz_gui,
         ares_rsp,
         spawn_ares,
         hostile_rsp,

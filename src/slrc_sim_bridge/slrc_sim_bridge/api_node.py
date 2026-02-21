@@ -105,10 +105,11 @@ class ApiServiceNode(Node):
         odom_topic = f'{self.robot_name}/odom'
         self.get_logger().info(f"Subscribing to odometry topic: '{odom_topic}'")
         self.create_subscription(Odometry, odom_topic, self.odom_callback, qos_profile_sensor_data)
-        self.create_subscription(Image, f'/{self.robot_name}/front_left/image_raw', self.cam_fl_callback, 10)
-        self.create_subscription(Image, f'/{self.robot_name}/front_right/image_raw', self.cam_fr_callback, 10)
-        self.create_subscription(Image, f'/{self.robot_name}/floor/image_raw', self.cam_floor_callback, 10)
-        self.create_subscription(Imu, f'/{self.robot_name}/imu/data', self.imu_callback, qos_profile_sensor_data)
+        # Match bridge topic names and QoS (sensor_data = best_effort for camera streams)
+        self.create_subscription(Image, f'{self.robot_name}/front_left/image_raw', self.cam_fl_callback, qos_profile_sensor_data)
+        self.create_subscription(Image, f'{self.robot_name}/front_right/image_raw', self.cam_fr_callback, qos_profile_sensor_data)
+        self.create_subscription(Image, f'{self.robot_name}/floor/image_raw', self.cam_floor_callback, qos_profile_sensor_data)
+        self.create_subscription(Imu, f'{self.robot_name}/imu/data', self.imu_callback, qos_profile_sensor_data)
 
         # Subscribe to hostile position (via Odometry)
         self.hostile_position = None
@@ -202,8 +203,8 @@ class ApiServiceNode(Node):
 
             # Clamp velocities
             if self.robot_name == 'hostile':
-                max_v = HostileConfig.PATROL_SPEED
-                max_w = HostileConfig.ROTATION_SPEED
+                max_v = HostileConfig.MAX_LINEAR_VEL
+                max_w = HostileConfig.MAX_ANGULAR_VEL
             else:
                 max_v = AresConfig.MAX_LINEAR_VEL
                 max_w = AresConfig.MAX_ANGULAR_VEL
@@ -337,23 +338,8 @@ class ApiServiceNode(Node):
                 "start_world": {"x": self.start_x, "y": self.start_y}
             }
 
-        @self.app.get("/arena/hostile_loop")
-        async def get_hostile_loop():
-            """Get the yellow hostile loop path as grid cells and world coordinates."""
-            loop = self.arena_config.get('hostile_loop', [])
-            
-            # Convert to world coordinates
-            world_coords = []
-            for cell in loop:
-                if isinstance(cell, list) and len(cell) == 2:
-                    x, y = self._cell_to_world(cell[0], cell[1])
-                    world_coords.append({"x": x, "y": y})
-            
-            return {
-                "cells": loop,
-                "world_coordinates": world_coords,
-                "node_count": len(loop)
-            }
+        # NOTE: /arena/hostile_loop endpoint removed — hostile robot now follows
+        # the yellow line via camera, no arena path knowledge needed.
 
         @self.app.get("/hostile/position")
         async def get_hostile_position():
@@ -523,16 +509,10 @@ class ApiServiceNode(Node):
 
     def execute_move_relative(self, cmd):
         """Execute a relative move using trapezoidal velocity profiles with configured limits."""
-        if self.robot_name == 'hostile':
-            max_v = HostileConfig.PATROL_SPEED
-            max_w = HostileConfig.ROTATION_SPEED
-            acc_v = HostileConfig.LINEAR_ACCEL
-            acc_w = HostileConfig.ANGULAR_ACCEL
-        else:
-            max_v = AresConfig.MAX_LINEAR_VEL
-            max_w = AresConfig.MAX_ANGULAR_VEL
-            acc_v = AresConfig.MAX_LINEAR_ACCEL
-            acc_w = AresConfig.MAX_ANGULAR_ACCEL
+        max_v = AresConfig.MAX_LINEAR_VEL
+        max_w = AresConfig.MAX_ANGULAR_VEL
+        acc_v = AresConfig.MAX_LINEAR_ACCEL
+        acc_w = AresConfig.MAX_ANGULAR_ACCEL
 
         profile_lin = TrapezoidalProfile(
             max_vel=max_v, 
