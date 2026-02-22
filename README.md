@@ -18,6 +18,7 @@ Python dependencies for the example scripts are installed automatically when you
 ### 1. Clone
 
 ```bash
+cd ~
 git clone https://github.com/SLRC-official/slrc_sim_2026 slrc_ws
 cd slrc_ws
 ```
@@ -48,7 +49,7 @@ That means the API is ready. You can now send commands to Ares from another term
 
 ---
 
-**Optional – Hostile robot (local testing only):** The Hostile robot (green) will sit still until you start its controller. In a *separate* terminal:
+**Hostile robot (local testing only):** The Hostile robot (green) will sit still until you start its controller. In a *separate* terminal:
 ```bash
 cd slrc_ws
 source slrc/bin/activate
@@ -56,13 +57,21 @@ python utils/hostile_controller.py
 ```
 The Hostile will then follow the yellow line. On competition day, organizers run this; you do not.
 
-**Optional – Test the API:** In another terminal:
+**Test the API:** In another terminal:
 ```bash
 cd slrc_ws
 source slrc/bin/activate
 python examples/test_api.py
 ```
 This runs a short test (drive, rotate, read odometry) to confirm the API works.
+
+**View cameras:** To see Ares camera feeds (front_left, front_right, floor) in OpenCV windows:
+```bash
+cd slrc_ws
+source slrc/bin/activate
+python examples/view_cameras.py
+```
+Press `q` to quit.
 
 ---
 
