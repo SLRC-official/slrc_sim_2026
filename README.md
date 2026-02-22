@@ -6,9 +6,10 @@ Tron-style arena simulation (Gazebo) with two robots: **Ares** (red, your team r
 
 ## Requirements
 
-## Requirements
+### OS
+- **Option 1:** Ubuntu 22.04. Other Ubuntu versions or other Linux distros may work but not guaranteed.
 
-- **OS: Option 1** Windows (Using a Virtual Machine)
+- **Option 2:** Windows (Using a Virtual Machine)
   Windows is supported via a virtual machine. The setup has been tested with Oracle VirtualBox running Ubuntu 22.04.2 .
 
     #### 1. Install VirtualBox
@@ -41,10 +42,7 @@ Tron-style arena simulation (Gazebo) with two robots: **Ares** (red, your team r
     
     ####  6. Build
     - Now follows the below steps to clone the repo and build the simulation. (*Alternative*: Install the repo as a zip file, navigate to the directory and build by following step 2 onwards.) 
-- **OS:** Ubuntu 22.04. This is the only tested version. Other Ubuntu versions or other Linux distros may work but not guaranteed.
-- **Display:** You need a graphical display (X11) so the Gazebo 3D window can open. SSH without X forwarding won't work for the GUI.
 
-Python dependencies for the example scripts are installed automatically when you run the build script (creates a virtual env named `slrc`).
 
 ---
 
