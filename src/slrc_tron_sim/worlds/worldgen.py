@@ -1,7 +1,7 @@
 from pathlib import Path
 import math
 
-# -------- Spec constants --------
+# Spec constants
 GRID_N = 25
 CELL   = 0.40
 GRID_LINE_W = 0.03
@@ -21,7 +21,7 @@ Z_LINES  = FLOOR_TH + LINE_H / 2.0 + 0.0002
 Z_SQUARE = FLOOR_TH + SQUARE_H / 2.0 + 0.0004
 Z_PATH   = FLOOR_TH + PATH_H / 2.0 + 0.0006
 
-# -------- Fixed squares --------
+# Fixed squares
 RED_CELL  = (20, 3)
 BLUE_CELL = (2, 24)
 
@@ -30,7 +30,7 @@ def cell_center(i, j):
     y =  HALF - (j + 0.5) * CELL
     return x, y
 
-# -------- Yellow loop path nodes --------
+# Yellow path nodes
 PATH_NODES = [
 (2,2),(3,2),(4,2),(5,2),(6,2),(7,2),(8,2),(9,2),(10,2),(11,2),(12,2),(13,2),(14,2),(15,2),(16,2),(17,2),(18,2),
 (18,1),(18,0),(19,0),(20,0),(21,0),(22,0),(23,0),
@@ -51,7 +51,7 @@ PATH_NODES = [
 (2,10),(2,9),(2,8),(2,7),(2,6),(2,5),(2,4),(2,3)
 ]
 
-# -------- Visual helper with emissive material --------
+# Visual helper
 def box_visual(name, size_x, size_y, size_z, x, y, z,
                roll=0.0, pitch=0.0, yaw=0.0, rgba=(1,1,1,1), include_collision=False):
     r,g,b,a = rgba
@@ -83,7 +83,7 @@ def box_visual(name, size_x, size_y, size_z, x, y, z,
       </collision>"""
     return visual.rstrip()
 
-# -------- Floor --------
+# Floor
 def plane_model():
     return f"""
     <model name="floor">
@@ -106,7 +106,7 @@ def plane_model():
     </model>
 """.rstrip()
 
-# -------- Grid lines --------
+# Grid lines
 def grid_lines_model():
     parts = []
     for k in range(GRID_N + 1):
@@ -138,7 +138,7 @@ def grid_lines_model():
     </model>
 """.rstrip()
 
-# -------- Start & portal --------
+# Start & portal
 def squares_model():
     rx, ry = cell_center(*RED_CELL)
     bx, by = cell_center(*BLUE_CELL)
@@ -154,7 +154,7 @@ def squares_model():
     </model>
 """.rstrip()
 
-# -------- Hostile path --------
+# Hostile path
 def path_model():
     parts = []
     nodes = PATH_NODES[:] + [PATH_NODES[0]]
@@ -188,11 +188,21 @@ def path_model():
     </model>
 """.rstrip()
 
-# -------- SDF assembly --------
+# Required Gazebo plugins (must list all when defining any)
+SDF_PLUGINS = """
+    <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="libignition-gazebo-user-commands-system.so" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="libignition-gazebo-scene-broadcaster-system.so" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+"""
+
+# SDF assembly
 sdf = f"""<?xml version="1.0" ?>
 <sdf version="1.9">
   <world name="slrc_arena_from_image">
-
+{SDF_PLUGINS}
     <gravity>0 0 -9.81</gravity>
 
     <scene>
@@ -220,6 +230,6 @@ sdf = f"""<?xml version="1.0" ?>
 </sdf>
 """
 
-out = Path("slrc_tron_sim/worlds/encom_grid.sdf")
+out = Path(__file__).parent / "encom_grid.sdf"
 out.write_text(sdf)
 print(f"Wrote: {out.resolve()}")

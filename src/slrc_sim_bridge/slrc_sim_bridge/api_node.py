@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""
-SLRC 2026 API Service Node
-
-Provides REST and streaming API for contestant access to the simulation.
-Handles velocity commands, odometry, camera streams, and arena metadata.
-
-Differential drive robot uses:
-- velocity: forward/backward speed (m/s)
-- omega: rotational speed (rad/s)
-
-Author: kirangunathilaka
-Contact: slrc@uom.lk
-"""
+"""SLRC 2026 API Service. REST API for robot control, odometry, cameras, arena metadata."""
 
 import rclpy
 from rclpy.node import Node
@@ -41,35 +29,26 @@ from slrc_sim_bridge.utils.trajectory import TrapezoidalProfile
 from slrc_sim_bridge.config import AresConfig, ArenaConfig, HostileConfig
 
 
-# -----------------------------------------------------------------------------
-# FastAPI Models
-# -----------------------------------------------------------------------------
-
 class VelocityCommand(BaseModel):
-    """Differential drive velocity command."""
-    velocity: float  # Forward/backward speed in m/s (positive = forward)
-    omega: float = 0.0  # Rotational speed in rad/s (positive = counter-clockwise)
+    velocity: float
+    omega: float = 0.0
 
 
 class MoveRelativeCommand(BaseModel):
-    """Relative move command with trapezoidal profile."""
-    distance: float  # Distance to move in meters (positive = forward)
-    rotation: float = 0.0  # Rotation in radians (positive = counter-clockwise)
+    distance: float
+    rotation: float = 0.0
 
 
 class LedCommand(BaseModel):
-    state: str  # "on", "off", "blink"
-    color: str  # "red", "blue", "green"
+    state: str
+    color: str
 
 
 class PathMarkerCommand(BaseModel):
-    points: list  # [[x,y], [x,y]]
+    points: list
     type: str = "polyline"
 
 
-# -----------------------------------------------------------------------------
-# ROS Node
-# -----------------------------------------------------------------------------
 class ApiServiceNode(Node):
     def __init__(self):
         super().__init__('api_service')
@@ -94,24 +73,17 @@ class ApiServiceNode(Node):
 
         self.get_logger().info(f"Starting API Service on port {self.api_port}")
 
-        # Publishers (using /{self.robot_name}/ namespace)
         self.cmd_vel_pub = self.create_publisher(Twist, f'/{self.robot_name}/cmd_vel', 10)
         self.marker_pub = self.create_publisher(Marker, 'visualization_marker', 10)
         self.led_pub = self.create_publisher(String, 'led_cmd', 10)
 
-        # Subscribers
-        # Use default QoS profile for odometry (most compatible with bridge)
-        # Match bridge topic name exactly (no leading slash to match bridge.yaml)
         odom_topic = f'{self.robot_name}/odom'
         self.get_logger().info(f"Subscribing to odometry topic: '{odom_topic}'")
         self.create_subscription(Odometry, odom_topic, self.odom_callback, qos_profile_sensor_data)
-        # Match bridge topic names and QoS (sensor_data = best_effort for camera streams)
         self.create_subscription(Image, f'{self.robot_name}/front_left/image_raw', self.cam_fl_callback, qos_profile_sensor_data)
         self.create_subscription(Image, f'{self.robot_name}/front_right/image_raw', self.cam_fr_callback, qos_profile_sensor_data)
         self.create_subscription(Image, f'{self.robot_name}/floor/image_raw', self.cam_floor_callback, qos_profile_sensor_data)
         self.create_subscription(Imu, f'{self.robot_name}/imu/data', self.imu_callback, qos_profile_sensor_data)
-
-        # Subscribe to hostile position (via Odometry)
         self.hostile_position = None
         self.create_subscription(Odometry, '/hostile/odom', self.hostile_position_callback, 10)
 
@@ -338,9 +310,6 @@ class ApiServiceNode(Node):
                 "start_world": {"x": self.start_x, "y": self.start_y}
             }
 
-        # NOTE: /arena/hostile_loop endpoint removed — hostile robot now follows
-        # the yellow line via camera, no arena path knowledge needed.
-
         @self.app.get("/hostile/position")
         async def get_hostile_position():
             """Get current hostile robot position."""
@@ -361,8 +330,7 @@ class ApiServiceNode(Node):
                 "x": p.x,
                 "y": p.y,
                 "yaw": yaw,
-                # "timestamp": self.hostile_position.header.stamp.sec # optional
-            }
+                }
 
         @self.app.get("/start_coordinate")
         async def get_start_coordinate():
@@ -404,37 +372,27 @@ class ApiServiceNode(Node):
             self.marker_pub.publish(marker)
             return {"status": "marker_published"}
 
-    # -------------------------------------------------------------------------
-    # Callbacks
-    # -------------------------------------------------------------------------
     def odom_callback(self, msg: Odometry):
-        """Update current odometry state."""
         if self.current_odom is None:
             self.get_logger().info(f"First odometry received for {self.robot_name}!")
         self.current_odom = msg
 
     def cam_fl_callback(self, msg: Image):
-        """Update front-left camera frame."""
         self.latest_frames['front_left'] = self._process_image(msg)
 
     def cam_fr_callback(self, msg: Image):
-        """Update front-right camera frame."""
         self.latest_frames['front_right'] = self._process_image(msg)
 
     def cam_floor_callback(self, msg: Image):
-        """Update floor camera frame."""
         self.latest_frames['floor'] = self._process_image(msg)
 
     def imu_callback(self, msg: Imu):
-        """Update IMU data."""
         self.current_imu = msg
 
     def hostile_position_callback(self, msg: Odometry):
-        """Update known position of the hostile robot."""
         self.hostile_position = msg
 
     def _process_image(self, msg: Image) -> bytes:
-        """Convert ROS Image message to JPEG bytes."""
         try:
             # Basic conversion for BGR8/RGB8
             if msg.encoding == 'bgr8':
@@ -445,7 +403,6 @@ class ApiServiceNode(Node):
             else:
                 # Fallback for other encodings if needed
                 return None
-
             _, jpeg = cv2.imencode('.jpg', img)
             return jpeg.tobytes()
         except Exception as e:
@@ -453,7 +410,6 @@ class ApiServiceNode(Node):
             return None
 
     def generate_mjpeg(self, cam_id: str):
-        """Generator for MJPEG stream."""
         while True:
             frame = self.latest_frames.get(cam_id)
             if frame:
@@ -461,21 +417,13 @@ class ApiServiceNode(Node):
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
             time.sleep(0.05)
 
-    # -------------------------------------------------------------------------
-    # Helper Methods
-    # -------------------------------------------------------------------------
     def _quaternion_to_yaw(self, q) -> float:
         """Extract yaw from quaternion."""
         siny_cosp = 2.0 * (q.w * q.z + q.x * q.y)
         cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
         return math.atan2(siny_cosp, cosy_cosp)
 
-    def _cell_to_world(self, i: int, j: int) -> tuple:
-        """Convert grid cell indices to world coordinates using ArenaConfig."""
-        return ArenaConfig.cell_to_world(i, j)
-
     def publish_cmd_vel(self, velocity: float, omega: float):
-        """Publish velocity command and update command timestamp."""
         msg = Twist()
         msg.linear.x = float(velocity)
         msg.linear.y = 0.0  # Differential drive cannot strafe
@@ -484,12 +432,10 @@ class ApiServiceNode(Node):
         self.last_command_time = time.time()
 
     def _publish_stop(self):
-        """Publish stop command WITHOUT updating last_command_time."""
         msg = Twist()
         self.cmd_vel_pub.publish(msg)
 
     def watchdog_loop(self):
-        """Safety watchdog - stops robot if no commands received within timeout."""
         rate = 0.1
         watchdog_triggered = False
 
@@ -508,7 +454,6 @@ class ApiServiceNode(Node):
             time.sleep(rate)
 
     def execute_move_relative(self, cmd):
-        """Execute a relative move using trapezoidal velocity profiles with configured limits."""
         max_v = AresConfig.MAX_LINEAR_VEL
         max_w = AresConfig.MAX_ANGULAR_VEL
         acc_v = AresConfig.MAX_LINEAR_ACCEL
@@ -524,11 +469,9 @@ class ApiServiceNode(Node):
             max_accel=acc_w, 
             dt=0.05
         )
+        rate = self.create_rate(20)
 
-        # Use ROS Rate for simulation time sync
-        rate = self.create_rate(20)  # 20 Hz = 0.05s period
-
-        # Linear Move (distance)
+        # Linear
         if abs(cmd.distance) > 0.001:
             vels = profile_lin.calculate_distance_profile(cmd.distance)
             for v in vels:
@@ -538,7 +481,7 @@ class ApiServiceNode(Node):
                 rate.sleep()
             self.publish_cmd_vel(0.0, 0.0)
 
-        # Angular Move (rotation)
+        # Angular
         if abs(cmd.rotation) > 0.001:
             vels = profile_ang.calculate_distance_profile(cmd.rotation)
             for w in vels:
@@ -547,8 +490,6 @@ class ApiServiceNode(Node):
                 self.publish_cmd_vel(0.0, w)
                 rate.sleep()
             self.publish_cmd_vel(0.0, 0.0)
-        
-        # Ensure stop at end
         self.publish_cmd_vel(0.0, 0.0)
 
 
