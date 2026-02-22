@@ -29,18 +29,15 @@ LOOP_DT = 1.0 / 30
 MIN_AREA = 500
 MAX_LOST_FRAMES = 30
 
-# VERBOSE = True  # Uncomment to show API status
-VERBOSE = False
-
-
 def wait_for_api():
+    print("[Hostile] Waiting for API at localhost:8001...")
     while True:
         try:
             if requests.get(HEALTH_URL, timeout=2).status_code == 200:
-                # if VERBOSE: print("API online.")
+                print("[Hostile] API OK, connecting to camera...")
                 return
-        except requests.RequestException:
-            pass
+        except requests.RequestException as e:
+            print(f"[Hostile] API not reachable yet ({e}). Retrying in 1s...")
         time.sleep(1)
 
 
@@ -49,10 +46,10 @@ def wait_for_camera():
         try:
             r = requests.get(CAMERA_URL, timeout=2)
             if r.status_code == 200 and len(r.content) > 100:
-                # if VERBOSE: print("Camera active.")
+                print("[Hostile] Camera ready. Starting line follower.")
                 return
-        except requests.RequestException:
-            pass
+        except requests.RequestException as e:
+            print(f"[Hostile] Camera not ready ({e}). Retrying...")
         time.sleep(1)
 
 
@@ -88,23 +85,24 @@ def set_velocity(v, w):
 
 
 def execute_180():
+    turn_dir = random.choice([-1.0, 1.0])
+    direction = "left" if turn_dir < 0 else "right"
+    print(f"[Hostile] Reversing 180° (turning {direction})...")
     set_velocity(0, 0)
     time.sleep(0.3)
     turn_duration = math.pi / TURN_SPEED
-    turn_dir = random.choice([-1, 1])
     start = time.time()
     while (time.time() - start) < turn_duration:
         set_velocity(0, turn_dir * TURN_SPEED)
         time.sleep(LOOP_DT)
     set_velocity(0, 0)
     time.sleep(0.3)
+    print("[Hostile] Reversal done, resuming line follow.")
 
 
 def main():
-    # if VERBOSE: print("HOSTILE CONTROLLER - Line Follower")
     wait_for_api()
     wait_for_camera()
-    # if VERBOSE: print("Starting...")
 
     prev_error = 0.0
     lost_count = 0
@@ -124,6 +122,8 @@ def main():
 
         found, error, _ = detect_line(frame)
         if found:
+            if lost_count > 0:
+                print("[Hostile] Line found again.")
             lost_count = 0
             d_error = (error - prev_error) / LOOP_DT
             omega = -(STEER_KP * error + STEER_KD * d_error)
@@ -134,9 +134,13 @@ def main():
         else:
             lost_count += 1
             if lost_count < MAX_LOST_FRAMES:
+                if lost_count == 1:
+                    print("[Hostile] Line lost, recovering...")
                 recover_dir = -1.0 if prev_error >= 0 else 1.0
                 set_velocity(0.1, recover_dir * 1.0)
             else:
+                if lost_count == MAX_LOST_FRAMES:
+                    print("[Hostile] Line still lost, searching (spinning)...")
                 set_velocity(0, 1.5)
 
         elapsed = time.time() - loop_start
