@@ -6,6 +6,41 @@ Tron-style arena simulation (Gazebo) with two robots: **Ares** (red, your team r
 
 ## Requirements
 
+## Requirements
+
+- **OS: Option 1** Windows (Using a Virtual Machine)
+  Windows is supported via a virtual machine. The setup has been tested with Oracle VirtualBox running Ubuntu 22.04.2 .
+
+    #### 1. Install VirtualBox
+    Download and install Oracle VirtualBox.
+    
+    #### 2. Create a New Virtual Machine
+    Click **New** in VirtualBox to create a new VM.
+    
+    #### 3. Configure Name and Operating System
+    - Enter a suitable VM name.
+    - Under **Name and Operating System**, mount the Ubuntu `.iso` file (tested with Ubuntu 22.04.2).
+    - Download the Ubuntu ISO from:  
+      https://ubuntu.com/download/desktop
+    
+      <img src="media/VM_init.png" alt ="VM_setup" width="500" height= "500">
+    
+    #### 4. Unattended Installation
+    - Under **Unattended Install**, set a secure username and password.
+      
+      <img src = "media/VM_pw.png" alt = "VM_password" width = "500" height = "500">
+    
+    #### 5. Hardware Configuration
+    - Allocate sufficient RAM and CPU cores according to your host machine specifications.
+    - Recommended minimum:
+      - 4 GB RAM
+      - 2 CPU cores  
+      (Higher allocation is recommended for better simulation performance.)
+    
+    <img src = "media/VM_HW.png" alt = "VM_hardware_specs" width = "500" height = "500">
+    
+    ####  6. Build
+    - Now follows the below steps to clone the repo and build the simulation. (*Alternative*: Install the repo as a zip file, navigate to the directory and build by following step 2 onwards.) 
 - **OS:** Ubuntu 22.04. This is the only tested version. Other Ubuntu versions or other Linux distros may work but not guaranteed.
 - **Display:** You need a graphical display (X11) so the Gazebo 3D window can open. SSH without X forwarding won't work for the GUI.
 
