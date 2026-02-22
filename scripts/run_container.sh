@@ -1,6 +1,4 @@
 #!/bin/bash
-# Run the SLRC simulation container (Gazebo + bridge + API in one launch).
-
 set -e
 cd "$(dirname "$0")/.."
 
@@ -10,9 +8,11 @@ IMAGE_NAME="${SLRC_IMAGE_NAME:-slrc_bridge}"
 export ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-10}
 export IGN_PARTITION=${IGN_PARTITION:-slrc_sim}
 
-echo "Starting container '$CONTAINER_NAME' (image: $IMAGE_NAME)."
-echo "  - Gazebo + spawn + bridge + API (single launch, same partition)."
-echo "  - API: test_api.py, hostile_controller.py, view_cameras.py (localhost:8000 / 8001)."
+# Allow Docker to open GUI windows (Gazebo). Required for display to work.
+xhost +local:docker 2>/dev/null || true
+
+echo "Starting container '$CONTAINER_NAME'..."
+echo "  API: localhost:8000 | Hostile: python3 utils/hostile_controller.py"
 echo ""
 
 docker run --rm \

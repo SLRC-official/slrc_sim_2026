@@ -1,18 +1,9 @@
 #!/usr/bin/env python3
-"""
-SLRC 2026 Container Simulation Launch
-Used by container_full.launch.py (Gazebo + spawn only).
-
-Launches:
-- Gazebo Sim (Ignition)
-- Spawns Ares (Red) and Hostile (Yellow) robots
-- Robot State Publishers for both
-"""
+"""Container sim launch: Gazebo, spawn Ares/Hostile, robot state publishers."""
 
 import os
 import shutil
 
-# Container environment: same domain and partition for bridge (started later via exec)
 os.environ.setdefault("ROS_DOMAIN_ID", "10")
 os.environ.setdefault("IGN_PARTITION", "slrc_sim")
 
@@ -82,8 +73,6 @@ def generate_launch_description():
         hostile_desc = f.read()
     hostile_desc = hostile_desc.replace('package://slrc_tron_sim', pkg_slrc_tron_sim)
 
-    # Server: -s = server only, --headless-rendering = EGL surfaceless for camera sensors.
-    # Use full path (container may not have gz in PATH). Gazebo v6 provides ign or gz.
     gz_bin = shutil.which('gz') or shutil.which('ign')
     if not gz_bin:
         gz_bin = '/usr/bin/gz' if os.path.isfile('/usr/bin/gz') else '/usr/bin/ign'
@@ -95,7 +84,6 @@ def generate_launch_description():
         name='gz_server',
     )
 
-    # GUI: connects to server. Delayed so server loads world first.
     gz_gui = TimerAction(
         period=4.0,
         actions=[

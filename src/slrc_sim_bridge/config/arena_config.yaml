@@ -1,20 +1,9 @@
-# =============================================================================
-# SLRC 2026 Arena Configuration
-# Contact: slrc@uom.lk | Author: kirangunathilaka
-# =============================================================================
-
-# Grid parameters
+# SLRC 2026 Arena Configuration - DO NOT MODIFY (competition uses this)
 arena:
   grid_size: 25           # Number of cells per side
   cell_size: 0.40         # Cell size in meters
-  grid_span: 10.0         # Total arena span (grid_size * cell_size)
-  
-# Fixed cell locations (grid indices, 0-indexed)
-# Note: These are (i, j) where i is column, j is row
-# World coordinates are computed as:
-#   x = -grid_span/2 + (i + 0.5) * cell_size
-#   y =  grid_span/2 - (j + 0.5) * cell_size
+  grid_span: 10.0
 locations:
-  start_cell: [2, 24]      # Blue square - ego robot spawn
-  portal_cell: [20, 3]     # Red square - goal/portal
-  hostile_spawn: [2, 2]    # Yellow line start - hostile robot spawn
+  start_cell: [2, 24]
+  portal_cell: [20, 3]
+  hostile_spawn: [2, 2]

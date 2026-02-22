@@ -28,11 +28,9 @@ setup(
     maintainer_email='slrc@uom.lk',
     description='SLRC 2026 Simulation Bridge and API Service',
     license='Apache-2.0',
-    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'api_node = slrc_sim_bridge.api_node:main',
-            'hostile_controller = slrc_sim_bridge.hostile_controller:main',
         ],
     },
 )

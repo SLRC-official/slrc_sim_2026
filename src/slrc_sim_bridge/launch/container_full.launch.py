@@ -1,21 +1,9 @@
 #!/usr/bin/env python3
-"""
-SLRC 2026 Container Full Launch
-Run this INSIDE the Docker container at startup.
-
-Starts in one process (same IGN_PARTITION / ROS_DOMAIN_ID):
-- Gazebo Sim + spawn (Ares, Hostile) + robot_state_publishers
-- ROS-Gazebo parameter_bridge
-- API nodes (ports 8000, 8001)
-
-All in one launch so Ignition Transport partition is shared and
-Gazebo, bridge, and API see each other. No docker exec needed.
-"""
+"""Full container launch: sim + bridge + API (single partition)."""
 
 import os
 from pathlib import Path
 
-# Single environment for all children (sim + bridge + API)
 os.environ.setdefault("ROS_DOMAIN_ID", "10")
 os.environ.setdefault("IGN_PARTITION", "slrc_sim")
 

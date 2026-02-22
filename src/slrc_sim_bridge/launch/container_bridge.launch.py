@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""
-SLRC 2026 Container Bridge Launch
-Run this INSIDE the Docker container.
-
-Launches:
-- ROS-Gazebo Parameter Bridge
-- API Service for Ares (Port 8000)
-- API Service for Hostile (Port 8001)
-"""
+"""Container bridge: ROS-Gazebo bridge + API nodes (8000 Ares, 8001 Hostile)."""
 
 import os
 from pathlib import Path

@@ -1,5 +1,3 @@
-# SLRC 2026: Full simulation + bridge in one container
-# Gazebo + spawn at startup; bridge + API via docker exec
 FROM ros:humble-ros-base
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -21,7 +19,6 @@ RUN pip3 install \
     opencv-python-headless \
     requests
 
-# Workspace: both sim assets and bridge
 WORKDIR /root/ws/src
 COPY src/slrc_tron_sim /root/ws/src/slrc_tron_sim
 COPY src/slrc_sim_bridge /root/ws/src/slrc_sim_bridge
@@ -35,5 +32,4 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Single launch: Gazebo + spawn + bridge + API (same IGN_PARTITION so they communicate)
 CMD ["ros2", "launch", "slrc_sim_bridge", "container_full.launch.py"]
