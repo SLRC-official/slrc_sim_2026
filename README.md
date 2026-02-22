@@ -45,7 +45,9 @@ In the logs, wait until you see:
 ```
 Uvicorn running on http://0.0.0.0:8000
 ```
-That means the API is ready. You can now send commands to Ares from another terminal or from your Raspberry Pi.
+That means the API is ready. You can now send commands to Ares from another terminal or from your Raspberry Pi. 
+
+**Note:** The "Uvicorn running..." message may not be the final log line printed. Additional ROS logs or runtime messages may appear afterward. If unsure, scroll through the console output and verify that the Uvicorn startup line is present.
 
 ---
 
@@ -57,57 +59,61 @@ python utils/hostile_controller.py
 ```
 The Hostile will then follow the yellow line. On competition day, organizers run this; you do not.
 
-**Test the API:** In another terminal:
+## Testing the API
+
+Run a short test (drive, rotate, read odometry) to confirm the API is working:
+
 ```bash
 cd slrc_ws
 source slrc/bin/activate
 python examples/test_api.py
 ```
-This runs a short test (drive, rotate, read odometry) to confirm the API works.
 
-**View cameras:** To see Ares camera feeds (front_left, front_right, floor) in OpenCV windows:
+> **Tip:** If running from a different device on the same network (e.g. a Raspberry Pi), change the `BASE_URL` in the script from `localhost` to the IP address of the PC running the simulation — for example `http://192.168.1.53:8000`.
+
+---
+
+## Viewing Camera Feeds
+
+To display Ares camera feeds (`front_left`, `front_right`, `floor`) in OpenCV windows:
+
 ```bash
 cd slrc_ws
 source slrc/bin/activate
 python examples/view_cameras.py
 ```
+
 Press `q` to quit.
 
 ---
 
-## Connecting from Raspberry Pi
+## API Base URL
 
-When you test locally, your SBC(eg: RaspPi) or your PC and the simulation run on the same machine, so the API is at `http://localhost:8000`. On competition day, the simulation runs on the organizers' server and the connection details will be provided beforehand.
-
-**API Base URL:**
-- **Local testing (sim and Pi/PC on same machine):** `http://localhost:8000`
-- **Competition (SBC on network, sim on host):** `http://<SIMULATION_HOST_IP>:8000` (organizers will give you the connection strings)
+| Scenario | URL |
+|---|---|
+| Sim and client on the **same machine** | `http://localhost:8000` |
+| Client on a **different device**, same LAN | `http://<SIM_PC_IP>:8000` |
+| **Competition day** (organizer-hosted sim) | `http://<SIMULATION_HOST_IP>:8000` *(provided by organizers)* |
 
 ---
 
-## Example Code for Raspberry Pi
+## Connecting from a Raspberry Pi (or any SBC)
 
-Copy these snippets into your Raspberry Pi code. They use HTTP REST: you send requests to the API and get JSON (or images) back.
-
-**Activate the env first (or install `requests` on your Pi):**
-```bash
-source slrc/bin/activate   # if using the slrc env from build
-# or: pip install requests  # minimal for Pi
-```
-
-### 1. Health check
+### Example: Health Check
 
 ```python
 import requests
 
-API_BASE = "http://localhost:8000"  # Use simulation host IP on competition day
+API_BASE = "http://localhost:8000"  # Change this to simulation PC IP if on a different device
 
 def check_api():
     try:
         r = requests.get(f"{API_BASE}/health", timeout=2)
         if r.status_code == 200:
             data = r.json()
-            print("API ready. Odom:", data.get("odom_available"), "Cameras:", data.get("cameras"))
+            print("API ready.")
+            print("  Odometry available:", data.get("odom_available"))
+            print("  Cameras:", data.get("cameras"))
             return True
     except requests.RequestException as e:
         print("API not reachable:", e)
