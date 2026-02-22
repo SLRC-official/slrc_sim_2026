@@ -4,6 +4,4 @@ log/
 build_cache/
 install_cache/
 log_cache/
-build_cache/
-install_cache/
-log_cache/
+slrc/

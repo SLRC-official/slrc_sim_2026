@@ -2,16 +2,14 @@
 
 Tron-style arena simulation (Gazebo) with two robots: **Ares** (red, your team robot) and **Hostile** (green, autonomous). You control Ares only, via a REST API, from your Raspberry Pi or PC. The Hostile robot follows the yellow line on its own.
 
-**Repository:** [github.com/SLRC-official/slrc_sim_2026](https://github.com/SLRC-official/slrc_sim_2026)
-
 ---
 
 ## Requirements
 
-- **OS:** Ubuntu 22.04. This is the only supported/tested version. Other Ubuntu versions or other Linux distros may fail.
-- **Docker:** Used to run the simulation in an isolated environment. Install with `sudo apt install docker.io` (then add your user to the `docker` group so you don't need `sudo`).
-- **Python 3 + requests:** For the example scripts (`test_api.py`, `view_cameras.py`). Install with `pip install requests`. For the camera viewer, also `pip install opencv-python numpy`.
+- **OS:** Ubuntu 22.04. This is the only tested version. Other Ubuntu versions or other Linux distros may work but not guaranteed.
 - **Display:** You need a graphical display (X11) so the Gazebo 3D window can open. SSH without X forwarding won't work for the GUI.
+
+Python dependencies for the example scripts are installed automatically when you run the build script (creates a virtual env named `slrc`).
 
 ---
 
@@ -32,7 +30,7 @@ This downloads the simulation files. You only need to do this once.
 ./scripts/build_container.sh
 ```
 
-This builds a Docker image with ROS 2, Gazebo, the bridge, and the API. It may take several minutes the first time. You only need to rebuild if you change the simulation or update the repo.
+This creates a Python virtual env (`slrc`), installs dependencies from `requirements.txt`, and builds a Docker image with ROS 2, Gazebo, the bridge, and the API. It may take several minutes the first time. You only need to rebuild if you change the simulation or update the repo.
 
 ### 3. Run
 
@@ -50,17 +48,19 @@ That means the API is ready. You can now send commands to Ares from another term
 
 ---
 
-**Optional – Hostile robot (local testing only):** The Hostile robot (green) will sit still until you start its controller. In a *separate* terminal, run:
+**Optional – Hostile robot (local testing only):** The Hostile robot (green) will sit still until you start its controller. In a *separate* terminal:
 ```bash
 cd slrc_ws
-python3 utils/hostile_controller.py
+source slrc/bin/activate
+python utils/hostile_controller.py
 ```
 The Hostile will then follow the yellow line. On competition day, organizers run this; you do not.
 
 **Optional – Test the API:** In another terminal:
 ```bash
 cd slrc_ws
-python3 examples/test_api.py
+source slrc/bin/activate
+python examples/test_api.py
 ```
 This runs a short test (drive, rotate, read odometry) to confirm the API works.
 
@@ -80,10 +80,10 @@ When you test locally, your SBC(eg: RaspPi) or your PC and the simulation run on
 
 Copy these snippets into your Raspberry Pi code. They use HTTP REST: you send requests to the API and get JSON (or images) back.
 
-**Install the requests library first:**
-
+**Activate the env first (or install `requests` on your Pi):**
 ```bash
-pip install requests
+source slrc/bin/activate   # if using the slrc env from build
+# or: pip install requests  # minimal for Pi
 ```
 
 ### 1. Health check
@@ -313,11 +313,13 @@ Units: `velocity` (m/s), `omega` (rad/s), `distance` (m), `rotation` (rad).
 
 ## Example Scripts
 
+Activate the env first: `source slrc/bin/activate`
+
 | Script | Description | Run |
 |--------|-------------|-----|
-| [examples/test_api.py](examples/test_api.py) | Test Ares API (velocity, odom, move_relative) | `python3 examples/test_api.py` |
-| [examples/view_cameras.py](examples/view_cameras.py) | View Ares camera feeds in OpenCV windows | `python3 examples/view_cameras.py` |
-| [utils/hostile_controller.py](utils/hostile_controller.py) | Hostile line follower (organizer; run for local testing) | `python3 utils/hostile_controller.py` |
+| [examples/test_api.py](examples/test_api.py) | Test Ares API (velocity, odom, move_relative) | `python examples/test_api.py` |
+| [examples/view_cameras.py](examples/view_cameras.py) | View Ares camera feeds in OpenCV windows | `python examples/view_cameras.py` |
+| [utils/hostile_controller.py](utils/hostile_controller.py) | Hostile line follower (organizer; run for local testing) | `python utils/hostile_controller.py` |
 
 ---
 
@@ -354,7 +356,8 @@ If you want to change the arena (grid, yellow path, obstacles), you can generate
 |------|---------|
 | Build | `./scripts/build_container.sh` |
 | Run | `./scripts/run_container.sh` |
-| Test API | `python3 examples/test_api.py` |
-| View cameras | `python3 examples/view_cameras.py` |
-| Hostile controller (local test) | `python3 utils/hostile_controller.py` |
+| Activate env | `source slrc/bin/activate` |
+| Test API | `python examples/test_api.py` |
+| View cameras | `python examples/view_cameras.py` |
+| Hostile controller (local test) | `python utils/hostile_controller.py` |
 | Generate world | `cd src && python3 slrc_tron_sim/worlds/worldgen.py` |
