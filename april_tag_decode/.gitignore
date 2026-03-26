@@ -1,0 +1,11 @@
+# AprilTag CMake build output (rebuild with: cd apriltag/build && cmake .. && make)
+apriltag/build/
+
+# Compiled C++ demo binary
+april_tag/test_52h13_lowmem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
