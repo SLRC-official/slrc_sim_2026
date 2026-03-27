@@ -119,12 +119,11 @@
   </joint>
 
   <!-- =========================
-       LED
+       LED (base cylinder + dome sphere on top)
        ========================= -->
-  <link name="led_link">
-    <!-- Cylinder base -->
+  <link name="led_base_link">
     <visual name="led_base_vis">
-      <origin xyz="0 0 0.005" rpy="0 0 0"/>
+      <origin xyz="0 0 0.0075" rpy="0 0 0"/>
       <geometry>
         <cylinder radius="0.005" length="0.015"/>
       </geometry>
@@ -132,24 +131,37 @@
         <color rgba="1.0 0.05 0.15 1.0"/>
       </material>
     </visual>
+  </link>
 
-    <!-- Dome: sit on top of cylinder -->
+  <joint name="led_base_fixed" type="fixed">
+    <parent link="base_link"/>
+    <child link="led_base_link"/>
+    <origin xyz="-0.05 0 0.058" rpy="0 0 0"/>
+  </joint>
+
+  <link name="led_link">
     <visual name="led_dome_vis">
-      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <sphere radius="0.008"/>
       </geometry>
-      <material name="led_glow_blue">
-        <color rgba="0.10 0.40 1.00 1.0"/>
+      <material name="led_off">
+        <color rgba="0.15 0.15 0.15 1.0"/>
       </material>
     </visual>
   </link>
 
-  <joint name="led_fixed" type="fixed">
-    <parent link="base_link"/>
+  <joint name="led_dome_fixed" type="fixed">
+    <parent link="led_base_link"/>
     <child link="led_link"/>
-    <origin xyz="-0.05 0 0.058" rpy="0 0 0"/>
+    <origin xyz="0 0 0.015" rpy="0 0 0"/>
   </joint>
+
+  <gazebo reference="led_link">
+    <visual name="led_dome_vis">
+      <cast_shadows>false</cast_shadows>
+    </visual>
+  </gazebo>
 
   <!-- =========================
        Cameras (2 front + 1 floor)

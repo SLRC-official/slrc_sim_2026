@@ -11,6 +11,11 @@ from std_msgs.msg import String
 from visualization_msgs.msg import Marker
 from rclpy.qos import qos_profile_sensor_data, QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 
+import os
+import re
+import shutil
+import subprocess
+import tempfile
 import threading
 import uvicorn
 import yaml
@@ -23,7 +28,9 @@ import cv2
 import numpy as np
 import time
 import math
-from typing import Optional, List
+from typing import Optional, List, Tuple
+
+from ament_index_python.packages import get_package_share_directory
 
 from slrc_sim_bridge.utils.trajectory import TrapezoidalProfile
 from slrc_sim_bridge.config import AresConfig, ArenaConfig, HostileConfig
@@ -44,12 +51,24 @@ class LedCommand(BaseModel):
     color: str
 
 
+class SimpleLedCommand(BaseModel):
+    state: int
+
+
 class PathMarkerCommand(BaseModel):
     points: list
     type: str = "polyline"
 
 
 class ApiServiceNode(Node):
+    """REST + ROS node. LED sync uses Ignition Fortress `ign service` (ign_msgs.* types)."""
+
+    _GZ_WORLD = 'slrc_arena_from_image'
+    # sdformat merges fixed joints into one link; LED geometry ends up on base_footprint with
+    # mangled visual names. Matches `ign sdf -p ares.urdf` (not raw URDF link led_link).
+    _LED_LUMP_LINK = 'base_footprint'
+    _LED_DOME_VISUAL_SDF = 'base_footprint_fixed_joint_lump__led_dome_vis_visual_2'
+
     def __init__(self):
         super().__init__('api_service')
 
@@ -60,6 +79,8 @@ class ApiServiceNode(Node):
         self.declare_parameter('watchdog_timeout', 1.0)
         self.declare_parameter('arena_config_file', '')
         self.declare_parameter('robot_name', 'ares')
+        self.declare_parameter('led_lump_link', '')
+        self.declare_parameter('led_dome_visual', '')
 
         self.api_port = self.get_parameter('port').value
         self.start_x = self.get_parameter('start_x').value
@@ -67,6 +88,20 @@ class ApiServiceNode(Node):
         self.watchdog_timeout = self.get_parameter('watchdog_timeout').value
         self.robot_name = self.get_parameter('robot_name').value
         arena_config_path = self.get_parameter('arena_config_file').value
+
+        self._led_lump_link = self._LED_LUMP_LINK
+        self._led_dome_visual_sdf = self._LED_DOME_VISUAL_SDF
+        if self.robot_name == 'ares':
+            lump_ov = str(self.get_parameter('led_lump_link').value or '').strip()
+            vis_ov = str(self.get_parameter('led_dome_visual').value or '').strip()
+            if lump_ov and vis_ov:
+                self._led_lump_link = lump_ov
+                self._led_dome_visual_sdf = vis_ov
+            else:
+                r_link, r_vis = self._resolve_led_sdf_names_from_urdf()
+                if r_link and r_vis:
+                    self._led_lump_link = r_link
+                    self._led_dome_visual_sdf = r_vis
 
         # Load arena configuration
         self.arena_config = self._load_arena_config(arena_config_path)
@@ -90,6 +125,7 @@ class ApiServiceNode(Node):
         # State
         self.current_odom = None
         self.current_imu = None
+        self.led_state = 0
         self.latest_frames = {
             'front_left': None,
             'front_right': None,
@@ -346,6 +382,18 @@ class ApiServiceNode(Node):
             self.led_pub.publish(msg)
             return {"status": "led_command_sent", "cmd": msg.data}
 
+        @self.app.post("/led")
+        async def set_led_state(cmd: SimpleLedCommand):
+            """Turn LED on (1) or off (0)."""
+            self.led_state = 1 if cmd.state else 0
+            self._set_led_visual(self.led_state)
+            return {"status": "ok", "led": self.led_state}
+
+        @self.app.get("/led")
+        async def get_led_state():
+            """Get current LED state."""
+            return {"led": self.led_state}
+
         @self.app.post("/utility/mark_path")
         async def mark_path(cmd: PathMarkerCommand):
             """Draw a path marker in the simulation (for debugging)."""
@@ -416,6 +464,164 @@ class ApiServiceNode(Node):
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
             time.sleep(0.05)
+
+    def _resolve_led_sdf_names_from_urdf(self) -> Tuple[str, str]:
+        """Align LED entity names with this machine's sdformat URDF→SDF merge (differs by version)."""
+        try:
+            pkg = get_package_share_directory('slrc_tron_sim')
+        except LookupError:
+            self.get_logger().debug('slrc_tron_sim share not found; using default LED entity names')
+            return ('', '')
+        urdf_path = os.path.join(pkg, 'urdf', 'ares.urdf')
+        if not os.path.isfile(urdf_path):
+            return ('', '')
+        try:
+            with open(urdf_path, 'r', encoding='utf-8') as f:
+                urdf_text = f.read()
+        except OSError:
+            return ('', '')
+        urdf_text = urdf_text.replace('package://slrc_tron_sim', pkg)
+        binaries = []
+        ign = shutil.which('ign')
+        gz = shutil.which('gz')
+        if ign:
+            binaries.append(ign)
+        if gz and gz != ign:
+            binaries.append(gz)
+        for binary in binaries:
+            tmp_path = None
+            try:
+                with tempfile.NamedTemporaryFile(
+                    mode='w', suffix='.urdf', delete=False, encoding='utf-8'
+                ) as tf:
+                    tf.write(urdf_text)
+                    tmp_path = tf.name
+                proc = subprocess.run(
+                    [binary, 'sdf', '-p', tmp_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=30.0,
+                )
+                if proc.returncode != 0:
+                    continue
+                current_link = None
+                for line in proc.stdout.splitlines():
+                    lm = re.search(r"<link name='([^']+)'", line)
+                    if lm:
+                        current_link = lm.group(1)
+                        continue
+                    vm = re.search(r"<visual name='([^']*led_dome[^']*)'", line)
+                    if vm and current_link:
+                        vis = vm.group(1)
+                        self.get_logger().info(
+                            f'Resolved LED SDF names via {binary}: '
+                            f'link={current_link!r} visual={vis!r}'
+                        )
+                        return (current_link, vis)
+            except (subprocess.SubprocessError, OSError):
+                continue
+            finally:
+                if tmp_path:
+                    try:
+                        os.unlink(tmp_path)
+                    except OSError:
+                        pass
+        self.get_logger().warn(
+            'Could not resolve LED dome visual via ign/gz sdf -p; using built-in defaults'
+        )
+        return ('', '')
+
+    def _ign_cli_env(self):
+        """Match partition with container_sim.launch.py / entrypoint.sh."""
+        env = os.environ.copy()
+        env.setdefault('IGN_PARTITION', 'slrc_sim')
+        env.setdefault('GZ_PARTITION', 'slrc_sim')
+        return env
+
+    def _ign_service(self, service: str, reqtype: str, reptype: str, req: str) -> bool:
+        """Call `ign service` or `gz service` (Gazebo Sim 6; ign_msgs.* types in CLI)."""
+        binaries = []
+        for b in (shutil.which('ign'), shutil.which('gz')):
+            if b and b not in binaries:
+                binaries.append(b)
+        if not binaries:
+            self.get_logger().warn(
+                'Neither ign nor gz CLI found; LED will not update in Gazebo. '
+                'Install gz/ign tools (e.g. ros-humble-ros-gz-sim dependencies).'
+            )
+            return False
+        for binary in binaries:
+            try:
+                proc = subprocess.run(
+                    [
+                        binary,
+                        'service',
+                        '-s', service,
+                        '--reqtype', reqtype,
+                        '--reptype', reptype,
+                        '--timeout', '2500',
+                        '--req', req,
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=5.0,
+                    env=self._ign_cli_env(),
+                )
+                if proc.returncode == 0:
+                    return True
+                self.get_logger().debug(
+                    f'{binary} service {service} rc={proc.returncode} '
+                    f'err={proc.stderr!r} out={proc.stdout!r}'
+                )
+            except (subprocess.SubprocessError, OSError) as e:
+                self.get_logger().debug(f'{binary} service failed: {e}')
+                continue
+        self.get_logger().warn(f'service call failed for {service} (tried: {binaries})')
+        return False
+
+    def _set_led_visual(self, on: int):
+        """Dome emissive + point light intensity via UserCommands (Fortress).
+
+        UserCommands.cc looks up entities via ECM components::Name() which
+        stores the LOCAL (unscoped) name, not the fully-qualified
+        model::link::visual path.  So we must pass just the bare names.
+        """
+        if self.robot_name != 'ares':
+            return
+
+        vis_name = self._led_dome_visual_sdf
+        vis_parent = self._led_lump_link
+
+        if on:
+            visual_req = f'''name: "{vis_name}"
+parent_name: "{vis_parent}"
+cast_shadows: false
+material {{
+  ambient {{ r: 0.1 g: 0.4 b: 1.0 a: 1.0 }}
+  diffuse {{ r: 0.1 g: 0.4 b: 1.0 a: 1.0 }}
+  emissive {{ r: 0.45 g: 0.85 b: 1.0 a: 1.0 }}
+}}
+'''
+        else:
+            visual_req = f'''name: "{vis_name}"
+parent_name: "{vis_parent}"
+cast_shadows: false
+material {{
+  ambient {{ r: 0.15 g: 0.15 b: 0.15 a: 1.0 }}
+  diffuse {{ r: 0.15 g: 0.15 b: 0.15 a: 1.0 }}
+  emissive {{ r: 0.0 g: 0.0 b: 0.0 a: 1.0 }}
+}}
+'''
+
+        w = f'/world/{self._GZ_WORLD}'
+        ok = self._ign_service(
+            f'{w}/visual_config', 'ign_msgs.Visual', 'ign_msgs.Boolean', visual_req
+        )
+        if not ok:
+            self.get_logger().warn(
+                'Could not reach Gazebo visual_config. '
+                'Is the sim running with IGN_PARTITION=slrc_sim and the ares model spawned?'
+            )
 
     def _quaternion_to_yaw(self, q) -> float:
         """Extract yaw from quaternion."""

@@ -73,12 +73,40 @@ def generate_launch_description():
         hostile_desc = f.read()
     hostile_desc = hostile_desc.replace('package://slrc_tron_sim', pkg_slrc_tron_sim)
 
-    gz_bin = shutil.which('gz') or shutil.which('ign')
-    if not gz_bin:
-        gz_bin = '/usr/bin/gz' if os.path.isfile('/usr/bin/gz') else '/usr/bin/ign'
-    gz_subcmd = 'sim' if (gz_bin and 'gz' in gz_bin) else 'gazebo'
+    # Gazebo Sim (Fortress / ign-gazebo6) vs CLI naming:
+    # On typical Ubuntu 22.04 + Humble hosts, /usr/bin/gz is Gazebo Classic 11's
+    # utility (camera, topic, world, …) — it has NO "sim" subcommand. The simulator
+    # for ros_gz_sim + libignition-gazebo6 is launched with `ign gazebo …`.
+    # Newer stacks ship a unified `gz` that exposes `gz sim`; prefer `ign` when
+    # both exist so Classic's `gz` is never mistaken for `gz sim`.
+    ign_bin = shutil.which('ign')
+    gz_sim_bin = shutil.which('gz')
+    if ign_bin:
+        launcher = ign_bin
+        sub = 'gazebo'
+    elif gz_sim_bin:
+        launcher = gz_sim_bin
+        sub = 'sim'
+    elif os.path.isfile('/usr/bin/ign'):
+        launcher = '/usr/bin/ign'
+        sub = 'gazebo'
+    else:
+        launcher = '/usr/bin/gz' if os.path.isfile('/usr/bin/gz') else 'gz'
+        sub = 'sim'
+
     gz_server = ExecuteProcess(
-        cmd=[gz_bin, gz_subcmd, '-s', '-r', '-v', '4', '--headless-rendering', sdf_file, '--force-version', '6'],
+        cmd=[
+            launcher,
+            sub,
+            '-s',
+            '-r',
+            '-v',
+            '4',
+            '--headless-rendering',
+            sdf_file,
+            '--force-version',
+            '6',
+        ],
         output='screen',
         shell=False,
         name='gz_server',
@@ -88,7 +116,7 @@ def generate_launch_description():
         period=4.0,
         actions=[
             ExecuteProcess(
-                cmd=[gz_bin, gz_subcmd, '-g', '--force-version', '6'],
+                cmd=[launcher, sub, '-g', '--force-version', '6'],
                 output='screen',
                 shell=False,
                 name='gz_gui',

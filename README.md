@@ -339,6 +339,18 @@ All sensor positions are relative to `base_link`.
 | Image topic | `/ares/front_left/image_raw` | `/ares/front_right/image_raw` | `/ares/floor/image_raw` |
 | Info topic | `/ares/front_left/camera_info` | `/ares/front_right/camera_info` | `/ares/floor/camera_info` |
 
+### LED
+
+| Parameter | Value |
+|-----------|-------|
+| Base frame | `led_base_link` |
+| Dome frame | `led_link` |
+| Base position (x, y, z) | `-0.05, 0, 0.058` m (rear of chassis, top) |
+| Dome position | `0, 0, 0.015` m above base (mounted on top) |
+| Geometry | Cylinder base (r=0.005, h=0.015) + sphere dome (r=0.008) |
+| Default state | Off (0) — dome is dark gray; turns bright blue when on |
+| Gazebo Sim note | This stack uses **Ignition Fortress** (Gazebo Sim 6), not Gazebo Classic. There is **no** `libLedPlugin.so` — the dome uses `visual_config` and an SDF **point light** (`led_point`) uses `light_config`, both via the built-in UserCommands plugin. The Docker image installs `ignition-tools` so `ign service` works. **Entity names:** `ign sdf -p` merges fixed joints into `base_footprint`, so the API targets `ares::base_footprint::base_footprint_fixed_joint_lump__led_dome_vis_visual_2` and `ares::base_footprint::led_point`, not `led_link`. |
+
 ---
 
 ## API Reference (Ares – Contestant Access)
@@ -372,6 +384,8 @@ Units: `velocity` (m/s), `omega` (rad/s), `distance` (m), `rotation` (rad).
 | GET | `/imu` | `{angular_velocity: {x,y,z}, linear_acceleration: {x,y,z}}` |
 | GET | `/camera/{cam_id}/frame` | JPEG image |
 | GET | `/camera/{cam_id}/stream` | MJPEG stream |
+| GET | `/led` | `{led: 0\|1}` — current LED state |
+| POST | `/led` | `{"state": 1}` or `{"state": 0}` — turn LED on/off |
 
 **Camera IDs:** `front_left`, `front_right`, `floor`
 

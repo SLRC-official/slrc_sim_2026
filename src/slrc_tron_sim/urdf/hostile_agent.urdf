@@ -9,10 +9,12 @@
   <!-- =========================
        Frames
        ========================= -->
-  <link name="base_footprint"/>
+  <!-- Unique root link name: avoids clashing with ares::base_footprint in Gazebo ECM
+       (UserCommands /visual_config resolves parent links by Name only). -->
+  <link name="hostile_base_footprint"/>
 
   <joint name="base_footprint_to_base" type="fixed">
-    <parent link="base_footprint"/>
+    <parent link="hostile_base_footprint"/>
     <child link="base_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
@@ -156,7 +158,7 @@
       <odom_topic>/hostile/odom</odom_topic>
       <tf_topic>/hostile/tf</tf_topic>
       <frame_id>odom</frame_id>
-      <child_frame_id>base_footprint</child_frame_id>
+      <child_frame_id>hostile_base_footprint</child_frame_id>
       <odom_publish_frequency>100</odom_publish_frequency>
 
       <max_linear_acceleration>5</max_linear_acceleration>
