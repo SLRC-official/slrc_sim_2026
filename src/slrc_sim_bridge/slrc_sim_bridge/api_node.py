@@ -203,7 +203,6 @@ class ApiServiceNode(Node):
             },
             'locations': {
                 'start_cell': [2, 24],
-                'portal_cell': [20, 3]
             }
         }
 
@@ -369,7 +368,6 @@ class ApiServiceNode(Node):
                 "cell_size": arena.get('cell_size', ArenaConfig.CELL_SIZE),
                 "grid_span": arena.get('grid_span', ArenaConfig.GRID_SPAN),
                 "start_cell": locations.get('start_cell', [2, 24]),
-                "portal_cell": locations.get('portal_cell', [20, 3]),
                 "start_world": {"x": self.start_x, "y": self.start_y}
             }
 

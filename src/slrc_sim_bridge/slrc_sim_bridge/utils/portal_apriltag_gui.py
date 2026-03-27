@@ -55,8 +55,10 @@ class App:
     def __init__(self, root, base_url: str):
         self.base_url = base_url.rstrip("/")
         self.root = root
-        self.root.title("Portal Controller & LED Monitor")
+        self.root.title("Temp debug portal for contestants")
         self.root.geometry("950x550")
+        self._push_after_id = None
+        self._loading_from_server = False
 
         frame_top = tk.LabelFrame(root, text="Portal Settings & Live Monitor", padx=10, pady=10)
         frame_top.pack(fill="x", padx=10, pady=5)
@@ -67,17 +69,23 @@ class App:
         self.led_circle = self.led_canvas.create_oval(5, 5, 25, 25, fill="grey", outline="black")
 
         tk.Label(frame_top, text="Count:").pack(side="left", padx=(20, 5))
-        self.slider = tk.Scale(frame_top, from_=0, to=3, orient="horizontal")
+        self.slider = tk.Scale(
+            frame_top,
+            from_=0,
+            to=3,
+            orient="horizontal",
+            command=self._on_slider_moved,
+        )
         self.slider.pack(side="left", padx=5)
 
         self.check_var = tk.BooleanVar()
-        self.check = tk.Checkbutton(frame_top, text="Trigger", variable=self.check_var)
-        self.check.pack(side="left", padx=5)
-
-        tk.Button(frame_top, text="Push Changes", command=self.send_settings, bg="#d1e7ff").pack(
-            side="left", padx=10
+        self.check = tk.Checkbutton(
+            frame_top,
+            text="Trigger",
+            variable=self.check_var,
+            command=self._push_portal_settings,
         )
-        tk.Button(frame_top, text="Manual Sync", command=self.sync_settings).pack(side="left")
+        self.check.pack(side="left", padx=5)
 
         frame_bot = tk.LabelFrame(root, text="April Tag Validation", padx=10, pady=10)
         frame_bot.pack(fill="both", expand=True, padx=10, pady=5)
@@ -97,7 +105,46 @@ class App:
         tk.Button(btn_frame, text="Refresh Table", command=self.fetch_tags).pack(side="left")
         tk.Button(btn_frame, text="Reset Server Tags", command=self.reset_tags, fg="red").pack(side="right")
 
+        self._load_initial_from_server()
         self.poll_trigger()
+        self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
+
+    def _on_closing(self):
+        if self._push_after_id is not None:
+            try:
+                self.root.after_cancel(self._push_after_id)
+            except tk.TclError:
+                pass
+            self._push_after_id = None
+        self.root.destroy()
+
+    def _on_slider_moved(self, _value):
+        """Scale fires on every tick while dragging; debounce POST to avoid flooding."""
+        if self._loading_from_server:
+            return
+        if self._push_after_id is not None:
+            self.root.after_cancel(self._push_after_id)
+        self._push_after_id = self.root.after(200, self._debounced_push)
+
+    def _debounced_push(self):
+        self._push_after_id = None
+        self._push_portal_settings()
+
+    def _load_initial_from_server(self):
+        """One-time GET so slider/checkbox match server before live updates."""
+        try:
+            r = requests.get(f"{self.base_url}/get_num_boxes_portal", timeout=2)
+            if r.status_code != 200:
+                return
+            data = r.json()
+            self._loading_from_server = True
+            try:
+                self.slider.set(int(data.get("count", 0)))
+                self.check_var.set(bool(data.get("trigger", False)))
+            finally:
+                self._loading_from_server = False
+        except requests.RequestException:
+            pass
 
     def update_led(self, state):
         color = "#00FF00" if state else "#808080"
@@ -112,24 +159,17 @@ class App:
             self.update_led(False)
         self.root.after(1000, self.poll_trigger)
 
-    def send_settings(self):
+    def _push_portal_settings(self):
+        if self._loading_from_server:
+            return
         try:
             requests.post(
                 f"{self.base_url}/set_num_boxes_portal",
-                json={"count": self.slider.get(), "trigger": self.check_var.get()},
+                json={"count": int(self.slider.get()), "trigger": bool(self.check_var.get())},
                 timeout=1,
             )
         except requests.RequestException as e:
             messagebox.showerror("Error", str(e))
-
-    def sync_settings(self):
-        try:
-            r = requests.get(f"{self.base_url}/get_num_boxes_portal", timeout=1)
-            data = r.json()
-            self.slider.set(data.get("count", 0))
-            self.check_var.set(data.get("trigger", False))
-        except requests.RequestException:
-            pass
 
     def fetch_tags(self):
         try:

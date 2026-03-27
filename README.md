@@ -226,7 +226,7 @@ if pose:
     print(f"Position: x={x:.2f} y={y:.2f} yaw={yaw:.2f}")
 ```
 
-### 6. Get arena metadata (start, portal cells, grid)
+### 6. Get arena metadata (start cell, grid)
 
 ```python
 def get_arena_metadata():
@@ -242,7 +242,6 @@ def get_arena_metadata():
 meta = get_arena_metadata()
 if meta:
     start = meta["start_cell"]      # [2, 24]
-    portal = meta["portal_cell"]    # [20, 3]
     cell_size = meta["cell_size"]   # 0.4
     grid_span = meta["grid_span"]   # 10.0
 ```
@@ -393,7 +392,7 @@ Units: `velocity` (m/s), `omega` (rad/s), `distance` (m), `rotation` (rad).
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/arena/metadata` | Grid size, cell size, start/portal cells, world coords |
+| GET | `/arena/metadata` | Grid size, cell size, start cell, Ares start in world frame |
 | GET | `/start_coordinate` | `{x, y}` Ares start in world frame |
 
 ### Utility
