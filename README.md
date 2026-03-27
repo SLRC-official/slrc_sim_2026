@@ -309,6 +309,38 @@ requests.post(f"{API_BASE}/move_relative", json={"distance": 0, "rotation": math
 
 ---
 
+## Sensor Specifications (Ares)
+
+All sensor positions are relative to `base_link`.
+
+### IMU
+
+| Parameter | Value |
+|-----------|-------|
+| Frame | `imu_link` |
+| Position (x, y, z) | `0, 0, 0.05` m (centered on chassis, 5 cm above base) |
+| Topic | `/ares/imu/data` |
+| Update rate | 100 Hz |
+| Angular velocity noise | Gaussian, stddev = 0.001 rad/s |
+| Linear acceleration noise | Gaussian, stddev = 0.01 m/s² |
+
+### Cameras
+
+| Parameter | Front Left | Front Right | Floor |
+|-----------|-----------|------------|-------|
+| Frame | `cam_front_left_link` | `cam_front_right_link` | `cam_floor_link` |
+| Position (x, y, z) | `0.45, 0.10, 0.45` m | `0.45, -0.10, 0.45` m | `0.15, 0.0, 0.18` m |
+| Orientation (r, p, y) | `0, 0, 0.7854` rad (yaw +45°) | `0, 0, -0.7854` rad (yaw −45°) | `0, 1.5708, 0` rad (pitch 90° down) |
+| Resolution | 640 × 480 | 640 × 480 | 640 × 480 |
+| Horizontal FOV | 1.658 rad (~95°) | 1.658 rad (~95°) | 2.268 rad (~130°) |
+| Clip range | 0.05 – 50 m | 0.05 – 50 m | 0.02 – 10 m |
+| Format | R8G8B8 | R8G8B8 | R8G8B8 |
+| Update rate | 30 Hz | 30 Hz | 30 Hz |
+| Image topic | `/ares/front_left/image_raw` | `/ares/front_right/image_raw` | `/ares/floor/image_raw` |
+| Info topic | `/ares/front_left/camera_info` | `/ares/front_right/camera_info` | `/ares/floor/camera_info` |
+
+---
+
 ## API Reference (Ares – Contestant Access)
 
 **Base URL:** `http://localhost:8000` (or `http://<SIMULATION_HOST_IP>:8000` from Raspberry Pi)

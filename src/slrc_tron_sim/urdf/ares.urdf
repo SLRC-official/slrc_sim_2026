@@ -183,12 +183,18 @@
   <joint name="imu_fixed" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="0 0 0.35" rpy="0 0 0"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
   </joint>
 
   <!-- =========================================================
        Gazebo Sim (Ignition): Plugins and sensors
        ========================================================= -->
+
+  <gazebo>
+    <plugin
+      filename="libignition-gazebo-imu-system.so"
+      name="ignition::gazebo::systems::Imu"/>
+  </gazebo>
 
   <gazebo>
     <plugin
