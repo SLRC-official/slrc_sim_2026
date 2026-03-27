@@ -309,6 +309,50 @@ requests.post(f"{API_BASE}/move_relative", json={"distance": 0, "rotation": math
 
 ---
 
+## Sensor Specifications (Ares)
+
+All sensor positions are relative to `base_link`.
+
+### IMU
+
+| Parameter | Value |
+|-----------|-------|
+| Frame | `imu_link` |
+| Position (x, y, z) | `0, 0, 0.05` m (centered on chassis, 5 cm above base) |
+| Topic | `/ares/imu/data` |
+| Update rate | 100 Hz |
+| Angular velocity noise | Gaussian, stddev = 0.001 rad/s |
+| Linear acceleration noise | Gaussian, stddev = 0.01 m/s² |
+
+### Cameras
+
+| Parameter | Front Left | Front Right | Floor |
+|-----------|-----------|------------|-------|
+| Frame | `cam_front_left_link` | `cam_front_right_link` | `cam_floor_link` |
+| Position (x, y, z) | `0.45, 0.10, 0.45` m | `0.45, -0.10, 0.45` m | `0.15, 0.0, 0.18` m |
+| Orientation (r, p, y) | `0, 0, 0.7854` rad (yaw +45°) | `0, 0, -0.7854` rad (yaw −45°) | `0, 1.5708, 0` rad (pitch 90° down) |
+| Resolution | 640 × 480 | 640 × 480 | 640 × 480 |
+| Horizontal FOV | 1.658 rad (~95°) | 1.658 rad (~95°) | 2.268 rad (~130°) |
+| Clip range | 0.05 – 50 m | 0.05 – 50 m | 0.02 – 10 m |
+| Format | R8G8B8 | R8G8B8 | R8G8B8 |
+| Update rate | 30 Hz | 30 Hz | 30 Hz |
+| Image topic | `/ares/front_left/image_raw` | `/ares/front_right/image_raw` | `/ares/floor/image_raw` |
+| Info topic | `/ares/front_left/camera_info` | `/ares/front_right/camera_info` | `/ares/floor/camera_info` |
+
+### LED
+
+| Parameter | Value |
+|-----------|-------|
+| Base frame | `led_base_link` |
+| Dome frame | `led_link` |
+| Base position (x, y, z) | `-0.05, 0, 0.058` m (rear of chassis, top) |
+| Dome position | `0, 0, 0.015` m above base (mounted on top) |
+| Geometry | Cylinder base (r=0.005, h=0.015) + sphere dome (r=0.008) |
+| Default state | Off (0) — dome is dark gray; turns bright blue when on |
+| Gazebo Sim note | This stack uses **Ignition Fortress** (Gazebo Sim 6), not Gazebo Classic. There is **no** `libLedPlugin.so` — the dome uses `visual_config` and an SDF **point light** (`led_point`) uses `light_config`, both via the built-in UserCommands plugin. The Docker image installs `ignition-tools` so `ign service` works. **Entity names:** `ign sdf -p` merges fixed joints into `base_footprint`, so the API targets `ares::base_footprint::base_footprint_fixed_joint_lump__led_dome_vis_visual_2` and `ares::base_footprint::led_point`, not `led_link`. |
+
+---
+
 ## API Reference (Ares – Contestant Access)
 
 **Base URL:** `http://localhost:8000` (or `http://<SIMULATION_HOST_IP>:8000` from Raspberry Pi)
@@ -340,6 +384,8 @@ Units: `velocity` (m/s), `omega` (rad/s), `distance` (m), `rotation` (rad).
 | GET | `/imu` | `{angular_velocity: {x,y,z}, linear_acceleration: {x,y,z}}` |
 | GET | `/camera/{cam_id}/frame` | JPEG image |
 | GET | `/camera/{cam_id}/stream` | MJPEG stream |
+| GET | `/led` | `{led: 0\|1}` — current LED state |
+| POST | `/led` | `{"state": 1}` or `{"state": 0}` — turn LED on/off |
 
 **Camera IDs:** `front_left`, `front_right`, `floor`
 
