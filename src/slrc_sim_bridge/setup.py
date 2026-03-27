@@ -22,7 +22,7 @@ setup(
             'config/arena_config.yaml'
         ]),
     ],
-    install_requires=['setuptools', 'fastapi', 'uvicorn', 'pyyaml'],
+    install_requires=['setuptools', 'fastapi', 'uvicorn', 'pyyaml', 'requests'],
     zip_safe=True,
     maintainer='kirangunathilaka',
     maintainer_email='slrc@uom.lk',
@@ -31,6 +31,7 @@ setup(
     entry_points={
         'console_scripts': [
             'api_node = slrc_sim_bridge.api_node:main',
+            'portal_apriltag_gui = slrc_sim_bridge.utils.portal_apriltag_gui:main',
         ],
     },
 )

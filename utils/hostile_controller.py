@@ -8,7 +8,7 @@ import requests
 import numpy as np
 import cv2
 
-API_URL = "http://localhost:8001"
+API_URL = "http://0.0.0.0:8001"
 VELOCITY_URL = f"{API_URL}/set_velocity"
 CAMERA_URL = f"{API_URL}/camera/floor/frame"
 HEALTH_URL = f"{API_URL}/health"
@@ -30,7 +30,7 @@ MIN_AREA = 500
 MAX_LOST_FRAMES = 30
 
 def wait_for_api():
-    print("[Hostile] Waiting for API at localhost:8001...")
+    print("[Hostile] Waiting for API at 0.0.0.0:8001...")
     while True:
         try:
             if requests.get(HEALTH_URL, timeout=2).status_code == 200:

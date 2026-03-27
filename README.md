@@ -102,7 +102,7 @@ source slrc/bin/activate
 python examples/test_api.py
 ```
 
-> **Tip:** If running from a different device on the same network (e.g. a Raspberry Pi), change the `BASE_URL` in the script from `localhost` to the IP address of the PC running the simulation — for example `http://192.168.1.53:8000`.
+> **Tip:** Defaults use `http://0.0.0.0:8000`, which matches the API listening on all interfaces. From another device on the LAN you can instead use the simulation PC’s address, e.g. `http://192.168.1.53:8000`, set `BASE_URL` or `SLRC_API_URL` accordingly.
 
 ---
 
@@ -124,7 +124,7 @@ Press `q` to quit.
 
 | Scenario | URL |
 |---|---|
-| Sim and client on the **same machine** | `http://localhost:8000` |
+| Sim and client on the **same machine** | `http://0.0.0.0:8000` (API binds `0.0.0.0`; clients may also use the host’s LAN IP) |
 | Client on a **different device**, same LAN | `http://<SIM_PC_IP>:8000` |
 | **Competition day** (organizer-hosted sim) | `http://<SIMULATION_HOST_IP>:8000` *(provided by organizers)* |
 
@@ -137,7 +137,7 @@ Press `q` to quit.
 ```python
 import requests
 
-API_BASE = "http://localhost:8000"  # Change this to simulation PC IP if on a different device
+API_BASE = "http://0.0.0.0:8000"  # On another machine, use http://<SIM_PC_IP>:8000
 
 def check_api():
     try:
@@ -280,7 +280,7 @@ import requests
 import time
 import math
 
-API_BASE = "http://localhost:8000"
+API_BASE = "http://0.0.0.0:8000"
 
 # Wait for API
 while True:
@@ -355,7 +355,7 @@ All sensor positions are relative to `base_link`.
 
 ## API Reference (Ares – Contestant Access)
 
-**Base URL:** `http://localhost:8000` (or `http://<SIMULATION_HOST_IP>:8000` from Raspberry Pi)
+**Base URL:** `http://0.0.0.0:8000` by default (server listens on all interfaces; from another host use `http://<SIMULATION_HOST_IP>:8000`)
 
 Units: `velocity` (m/s), `omega` (rad/s), `distance` (m), `rotation` (rad).
 
@@ -403,6 +403,44 @@ Units: `velocity` (m/s), `omega` (rad/s), `distance` (m), `rotation` (rad).
 | POST | `/utility/set_led` | `{"state": "on"\|"off"\|"blink", "color": "red"\|"blue"\|"green"}` | LED control |
 | POST | `/utility/mark_path` | `{"points": [[x,y],[x,y],...], "type": "polyline"}` | Draw path marker (debug) |
 
+### Portal & AprilTag (competition / finals; Ares port 8000)
+
+These routes provide HTTP access for **portal configuration** (box count, trigger) and for **staging AprilTag** reports from probes or vision. They are always enabled on each API process. State is in-memory **per process**—use port **8000** (Ares) for team robot control and for portal/tag traffic in normal operation; the Hostile API on **8001** exposes the same paths but maintains a separate cache.
+
+**Contestants:** Tag readings use a five-character `raw` string plus `order` (sequence 1–14) and grid coordinates `x`, `y` (0–24). Submit with `POST /april_tag`. Read portal state with `GET /get_num_boxes_portal` (`count` and `trigger`).
+
+**Organizers / operators:** Portal endpoints support the control UI (`/set_num_boxes_portal` with JSON `count` and `trigger`; `/set_num_boxes_portal_esp` sets `trigger` only, e.g. for external hardware). AprilTag history: `GET /get_april_tag`; clear cache with `POST /reset_april_tag` and `{"pass": "slrc_is_the_best"}`. The optional Tk GUI decodes `raw` locally and validates against reported `order`, `x`, `y` (published key-ID formulas: reverse digits, nibble swap, complement, digit swap, Gray code, then map index `A` to `order`, row, column).
+
+| Method | Path | Payload / response | Description |
+|--------|------|--------------------|-------------|
+| GET | `/get_num_boxes_portal` | `{"count": int, "trigger": bool}` | Current portal settings |
+| POST | `/set_num_boxes_portal` | `{"count": optional int, "trigger": optional bool}` | Update portal from GUI or automation |
+| POST | `/set_num_boxes_portal_esp` | `{"trigger": bool}` | Set trigger only (e.g. ESP) |
+| POST | `/april_tag` | `{"raw": string, "order": int, "x": int, "y": int}` | Append one tag report |
+| GET | `/get_april_tag` | `{"data": [ ... ]}` | All cached tag reports |
+| POST | `/reset_april_tag` | `{"pass": "slrc_is_the_best"}` | Clear tag cache (`401` if wrong password) |
+
+**Example (Python):** See [examples/test_portal_apriltag_api.py](examples/test_portal_apriltag_api.py) — waits for `/health`, reads portal `count` and `trigger` via `GET /get_num_boxes_portal`, posts sample readings with `POST /april_tag`, then lists `GET /get_april_tag`. Minimal pattern:
+
+```python
+import requests
+
+API = "http://0.0.0.0:8000"  # from another device use http://<SIM_PC_IP>:8000
+
+# Box count (and trigger) from portal
+r = requests.get(f"{API}/get_num_boxes_portal", timeout=3)
+r.raise_for_status()
+portal = r.json()
+print("count:", portal["count"], "trigger:", portal["trigger"])
+
+# Submit one AprilTag reading
+requests.post(
+    f"{API}/april_tag",
+    json={"raw": "05194", "order": 1, "x": 23, "y": 10},
+    timeout=3,
+).raise_for_status()
+```
+
 ---
 
 ## Example Scripts
@@ -412,8 +450,12 @@ Activate the env first: `source slrc/bin/activate`
 | Script | Description | Run |
 |--------|-------------|-----|
 | [examples/test_api.py](examples/test_api.py) | Test Ares API (velocity, odom, move_relative) | `python examples/test_api.py` |
+| [examples/test_portal_apriltag_api.py](examples/test_portal_apriltag_api.py) | Portal & AprilTag API sample (`/get_num_boxes_portal`, `/april_tag`) | `python examples/test_portal_apriltag_api.py` |
 | [examples/view_cameras.py](examples/view_cameras.py) | View Ares camera feeds in OpenCV windows | `python examples/view_cameras.py` |
 | [utils/hostile_controller.py](utils/hostile_controller.py) | Hostile line follower (organizer; run for local testing) | `python utils/hostile_controller.py` |
+| [src/slrc_sim_bridge/slrc_sim_bridge/utils/portal_apriltag_gui.py](src/slrc_sim_bridge/slrc_sim_bridge/utils/portal_apriltag_gui.py) | Portal + AprilTag monitor (Tk; needs `DISPLAY`, `python3-tk`) | `ros2 run slrc_sim_bridge portal_apriltag_gui` (optional `--api-url http://0.0.0.0:8000`) |
+
+The Docker full stack starts this GUI by default (`container_full.launch.py` sets `SLRC_API_URL` to `http://0.0.0.0:8000`). Set launch argument `launch_portal_gui:=false` to disable it. Override the API URL with env `SLRC_API_URL` if needed.
 
 ---
 
@@ -452,6 +494,7 @@ If you want to change the arena (grid, yellow path, obstacles), you can generate
 | Run | `./scripts/run_container.sh` |
 | Activate env | `source slrc/bin/activate` |
 | Test API | `python examples/test_api.py` |
+| Test portal & AprilTag API | `python examples/test_portal_apriltag_api.py` |
 | View cameras | `python examples/view_cameras.py` |
 | Hostile controller (local test) | `python utils/hostile_controller.py` |
 | Generate world | `cd src && python3 slrc_tron_sim/worlds/worldgen.py` |

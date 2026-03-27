@@ -12,7 +12,7 @@ export IGN_PARTITION=${IGN_PARTITION:-slrc_sim}
 xhost +local:docker 2>/dev/null || true
 
 echo "Starting container '$CONTAINER_NAME'..."
-echo "  API: localhost:8000 | Hostile: python3 utils/hostile_controller.py"
+echo "  API: 0.0.0.0:8000 | Portal GUI: ros2 run slrc_sim_bridge portal_apriltag_gui | Hostile: python3 utils/hostile_controller.py"
 echo ""
 
 docker run --rm \

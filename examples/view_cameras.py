@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""View robot cameras. Ares: --api-url http://localhost:8000. Hostile: --api-url http://localhost:8001 (floor only)."""
+"""View robot cameras. Ares: --api-url http://0.0.0.0:8000. Hostile: --api-url http://0.0.0.0:8001 (floor only)."""
 
 import cv2
 import numpy as np
@@ -19,7 +19,7 @@ def fetch_frame(api_url: str, cam_id: str):
 
 def main():
     ap = argparse.ArgumentParser(description="View SLRC robot cameras")
-    ap.add_argument('--api-url', default='http://localhost:8000', help='API URL')
+    ap.add_argument('--api-url', default='http://0.0.0.0:8000', help='API URL')
     args = ap.parse_args()
 
     cameras = ['front_left', 'front_right', 'floor']

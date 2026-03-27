@@ -4,7 +4,7 @@
 import requests
 import time
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://0.0.0.0:8000"
 NUM_SAMPLES = 4
 
 
@@ -67,7 +67,7 @@ def test_led():
 
 def main():
     print("=" * 60)
-    print("SLRC 2026 API Test – Ares (localhost:8000)")
+    print("SLRC 2026 API Test – Ares (0.0.0.0:8000)")
     print("=" * 60)
 
     sample_sensors("initial")

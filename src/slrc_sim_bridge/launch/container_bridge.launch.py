@@ -84,7 +84,7 @@ def generate_launch_description():
             'start_x': hostile_x,
             'start_y': hostile_y,
             'watchdog_timeout': 5.0,
-            'arena_config_file': arena_config_file
+            'arena_config_file': arena_config_file,
         }]
     )
 
@@ -100,7 +100,7 @@ def generate_launch_description():
             'start_x': start_x,
             'start_y': start_y,
             'watchdog_timeout': 5.0,
-            'arena_config_file': arena_config_file
+            'arena_config_file': arena_config_file,
         }]
     )
 

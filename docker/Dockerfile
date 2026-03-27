@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     ros-humble-ros-gz-bridge \
     ros-humble-robot-state-publisher \
     python3-pip \
+    python3-tk \
     libopencv-dev \
     && rm -rf /var/lib/apt/lists/*
 

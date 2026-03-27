@@ -9,8 +9,10 @@ os.environ.setdefault("IGN_PARTITION", "slrc_sim")
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import EnvironmentVariable, LaunchConfiguration
 
 
 def generate_launch_description():
@@ -25,4 +27,27 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(str(bridge_launch)),
     )
 
-    return LaunchDescription([sim, bridge])
+    launch_portal_gui = DeclareLaunchArgument(
+        'launch_portal_gui',
+        default_value='true',
+        description='If true, start Tk portal / AprilTag GUI (needs DISPLAY and python3-tk)',
+    )
+
+    api_base_for_gui = EnvironmentVariable(
+        'SLRC_API_URL',
+        default_value='http://127.0.0.1:8000',
+    )
+
+    portal_gui = ExecuteProcess(
+        cmd=['ros2', 'run', 'slrc_sim_bridge', 'portal_apriltag_gui'],
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('launch_portal_gui')),
+        additional_env={'SLRC_API_URL': api_base_for_gui},
+    )
+
+    return LaunchDescription([
+        launch_portal_gui,
+        sim,
+        bridge,
+        portal_gui,
+    ])

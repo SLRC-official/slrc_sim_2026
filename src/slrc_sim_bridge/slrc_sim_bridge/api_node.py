@@ -23,12 +23,12 @@ from pathlib import Path
 from fastapi import FastAPI, WebSocket, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 import cv2
 import numpy as np
 import time
 import math
-from typing import Optional, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from ament_index_python.packages import get_package_share_directory
 
@@ -58,6 +58,28 @@ class SimpleLedCommand(BaseModel):
 class PathMarkerCommand(BaseModel):
     points: list
     type: str = "polyline"
+
+
+class PortalSettingsUpdate(BaseModel):
+    count: Optional[int] = None
+    trigger: Optional[bool] = None
+
+
+class PortalEspTrigger(BaseModel):
+    trigger: bool
+
+
+class AprilTagPayload(BaseModel):
+    raw: str
+    order: int
+    x: int
+    y: int
+
+
+class ResetAprilTagsPayload(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    password: str = Field(alias="pass")
 
 
 class ApiServiceNode(Node):
@@ -136,6 +158,11 @@ class ApiServiceNode(Node):
         self.active_move_thread = None
         self.stop_requested = False
         self.last_command_time = time.time()
+
+        # Portal + AprilTag HTTP state (thread-safe; in-memory per API process)
+        self._portal_apriltag_lock = threading.Lock()
+        self._portal_settings: Dict[str, Any] = {"count": 0, "trigger": False}
+        self._april_tags: List[Dict[str, Any]] = []
 
         # Watchdog Thread
         self.watchdog_thread = threading.Thread(target=self.watchdog_loop, daemon=True)
@@ -419,6 +446,57 @@ class ApiServiceNode(Node):
 
             self.marker_pub.publish(marker)
             return {"status": "marker_published"}
+
+        @self.app.get("/get_num_boxes_portal")
+        async def get_num_boxes_portal():
+            """Portal box count and trigger."""
+            with self._portal_apriltag_lock:
+                return dict(self._portal_settings)
+
+        @self.app.post("/set_num_boxes_portal")
+        async def set_num_boxes_portal(body: PortalSettingsUpdate):
+            """Set portal count/trigger from GUI or automation."""
+            with self._portal_apriltag_lock:
+                if body.count is not None:
+                    self._portal_settings["count"] = body.count
+                if body.trigger is not None:
+                    self._portal_settings["trigger"] = body.trigger
+            return {"status": "success"}
+
+        @self.app.post("/set_num_boxes_portal_esp")
+        async def set_num_boxes_portal_esp(body: PortalEspTrigger):
+            """External ESP-style trigger update (trigger only)."""
+            with self._portal_apriltag_lock:
+                self._portal_settings["trigger"] = body.trigger
+            return {"status": "trigger_updated"}
+
+        @self.app.post("/april_tag")
+        async def post_april_tag(body: AprilTagPayload):
+            """Append one AprilTag report (raw + decoded coordinates)."""
+            entry = {
+                "raw": body.raw,
+                "order": body.order,
+                "x": body.x,
+                "y": body.y,
+            }
+            with self._portal_apriltag_lock:
+                self._april_tags.append(entry)
+            return {"status": "received"}
+
+        @self.app.get("/get_april_tag")
+        async def get_april_tag():
+            """List all cached AprilTag reports."""
+            with self._portal_apriltag_lock:
+                return {"data": list(self._april_tags)}
+
+        @self.app.post("/reset_april_tag")
+        async def reset_april_tag(body: ResetAprilTagsPayload):
+            """Clear AprilTag cache (password required)."""
+            if body.password != "slrc_is_the_best":
+                raise HTTPException(status_code=401, detail="unauthorized")
+            with self._portal_apriltag_lock:
+                self._april_tags.clear()
+            return {"status": "cleared"}
 
     def odom_callback(self, msg: Odometry):
         if self.current_odom is None:
