@@ -21,33 +21,58 @@ def _server_url() -> str:
 
 
 # --- DECODING ALGORITHM (Internal) ---
-def retrieve_coordinates(a_value):
-    if a_value < 0 or a_value >= 8750:
-        return None
-    return (a_value // 625) + 1, (a_value % 625) // 25, (a_value % 625) % 25
+def retrieve_coordinates(A_value):
+    if A_value < 0 or A_value >= 8750:
+        raise ValueError("Invalid A value")
+
+    order = (A_value // 625) + 1
+    remainder = A_value % 625
+    row = remainder // 25
+    col = remainder % 25
+    return order, row, col
 
 
 def decode_tag(tag_value):
+    """Decode 5-digit tag; returns (order, row, col) or None on invalid input."""
     try:
         ts = str(tag_value).zfill(5)
-        kid, p = int(ts[0]), int(ts[1:])
-        if kid == 0:
-            a = ((int(str(p).zfill(4)[::-1]) * 7) + 6180) % 10000
-        elif kid == 1:
-            s = str(p).zfill(4)
-            a = ((int(s[2:4] + s[0:2]) * 3) + 3141) % 8750
-        elif kid == 2:
-            a = (((9999 - p) * 9) + 2718) % 8750
-        elif kid == 3:
-            s = list(str(p).zfill(4))
+        if len(ts) != 5:
+            raise ValueError("Invalid tag value length")
+
+        key_id = int(ts[0])
+        payload = int(ts[1:])
+
+        if key_id == 0:  # Key 0 = 6180
+            p_rev = int(str(payload).zfill(4)[::-1])
+            A = ((p_rev * 7) + 6180) % 10000
+            return retrieve_coordinates(A)
+
+        elif key_id == 1:  # Key 1 = 3141
+            s = str(payload).zfill(4)
+            p_swap = int(s[2:4] + s[0:2])
+            A = ((p_swap * 3) + 3141) % 8750
+            return retrieve_coordinates(A)
+
+        elif key_id == 2:  # Key 2 = 2718
+            p_comp = 9999 - payload
+            A = ((p_comp * 9) + 2718) % 8750
+            return retrieve_coordinates(A)
+
+        elif key_id == 3:  # Key 3 = 8080
+            s = list(str(payload).zfill(4))
             s[0], s[3] = s[3], s[0]
-            a = ((int("".join(s)) * 11) + 8080) % 8750
-        elif kid == 4:
-            a = ((p ^ (p >> 1)) + 4040) % 8750
+            p_int = int("".join(s))
+            A = ((p_int * 11) + 8080) % 8750
+            return retrieve_coordinates(A)
+
+        elif key_id == 4:  # Key 4 = 4040
+            g = payload ^ (payload >> 1)
+            A = g ^ 4040
+            return retrieve_coordinates(A)
+
         else:
-            return None
-        return retrieve_coordinates(a)
-    except (ValueError, TypeError, IndexError):
+            raise ValueError("Invalid key ID")
+    except (ValueError, TypeError):
         return None
 
 
